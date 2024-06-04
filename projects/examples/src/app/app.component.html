@@ -1,2 +1,6 @@
 
-<div tvChart="Histogram" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
+<div tvChartGroup>
+  <div tvChart="Histogram" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
+  <div tvChart="Line" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
+  <div tvChart="Area" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}" tvChartBorder [borderColor]="'#ff0000'"></div>
+</div>

@@ -101,7 +101,7 @@
       "projectType": "library",
       "root": "library",
       "sourceRoot": "library/src",
-      "prefix": "lib",
+      "prefix": "tv",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

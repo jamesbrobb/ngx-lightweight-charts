@@ -1,5 +1,4 @@
 import {Component, inject} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import {
   HistogramData,
   LineData,
@@ -11,13 +10,32 @@ import {
 } from "lightweight-charts";
 import {Table} from "apache-arrow";
 import {TABLE_DATA} from "./loader/arrow_loader";
-import {TVChartDirective} from "ngx-lightweight-charts";
+import {TVChartDirective, TVChartGroupDirective, TVChartBorderDirective} from "ngx-lightweight-charts";
+
+import {
+  interval,
+  take,
+  Subject,
+  mergeMap,
+  BehaviorSubject,
+  tap,
+  switchMap,
+  from,
+  timer,
+  filter,
+  Observable,
+  bufferCount
+} from 'rxjs';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TVChartDirective],
+  imports: [
+    TVChartDirective,
+    TVChartGroupDirective,
+    TVChartBorderDirective
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -33,6 +51,8 @@ export class AppComponent {
     this.#data.data$.subscribe(data => {
       this.#parseData(data);
     });
+
+    //this.testIt();
   }
 
   #parseData(table: Table | undefined): void {
@@ -117,5 +137,50 @@ export class AppComponent {
       shape,
       text: `${text}${price}`
     };
+  }
+
+  obs3 = new Subject<Observable<boolean>[]>();
+  obs3$ = this.obs3.asObservable();
+  obs2 = new BehaviorSubject<boolean>(false);
+  obs2$ = this.obs2.asObservable()//.pipe(share());
+  obs1$ = timer(1000).pipe(
+    tap(() => {
+      this.obs2.next(true);
+    })
+  );
+  obs4$ = interval(500).pipe(
+    take(5),
+    tap(() => {
+      this.obs3.next([this.obs2$, this.obs2$, this.obs2$]);
+    })
+  );
+
+  testIt() {
+
+    this.obs3$
+      .pipe(
+        switchMap((obs) => {
+          return from(obs).pipe(
+            mergeMap((o) => {
+              return o.pipe(
+                filter((v) => v)
+              )
+            }),
+            bufferCount(obs.length),
+          )
+        }),
+        tap((arg) => console.log('tap', arg))
+      ).subscribe()
+
+
+    this.obs1$.subscribe({
+      next: (arg: any) => console.log('1', arg),
+      complete: () => console.log('1 completed'),
+    });
+
+    this.obs4$.subscribe({
+      next: (arg: any) => console.log('4', arg),
+      complete: () => console.log('4 completed'),
+    });
   }
 }
