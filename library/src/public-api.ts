@@ -1,3 +1,3 @@
 
-
+export * from './lib/charts';
 
