@@ -1,0 +1,33 @@
+{
+  "name": "ngx-lightweight-charts",
+  "version": "0.0.2",
+  "description": "Angular wrapper for Trading View lightweight-charts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesbrobb/ngx-lightweight-charts.git"
+  },
+  "keywords": [
+    "Angular",
+    "TradingView",
+    "lightweight-charts",
+    "ngx"
+  ],
+  "author": "James Robb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamesbrobb/ngx-lightweight-charts/issues"
+  },
+  "homepage": "https://github.com/jamesbrobb/ngx-lightweight-charts#readme",
+  "peerDependencies": {
+    "@angular/common": "^17.3.0",
+    "@angular/core": "^17.3.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
+
