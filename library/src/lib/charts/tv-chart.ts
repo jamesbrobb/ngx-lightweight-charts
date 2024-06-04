@@ -10,7 +10,7 @@ import {
   SeriesType,
   Time, ITimeScaleApi, IPriceScaleApi
 } from "lightweight-charts";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, delay} from "rxjs";
 
 
 export type SeriesCreationFn<T extends SeriesType, HorzScaleItem> = (options: SeriesPartialOptionsMap[T]) => ISeriesApi<T, HorzScaleItem>;
@@ -133,6 +133,22 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     }
 
     return this.#createSeries(type, this.#chart!, seriesOptions);
+  }
+
+  removeSeries(series?: ISeriesApi<SeriesType, HorzScaleItem>): void {
+    if(!series) {
+      series = this.#series;
+    }
+
+    if(!series) {
+      return;
+    }
+    // TODO: Fix typing issue
+    this.#chart?.removeSeries(series as any);
+  }
+
+  resize(width: number, height: number, forceRepaint?: boolean): void {
+    this.#chart?.resize(width, height, forceRepaint);
   }
 
   remove() {
