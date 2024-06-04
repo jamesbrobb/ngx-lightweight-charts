@@ -1,9 +1,12 @@
 {
   "name": "ngx-lightweight-charts",
-  "version": "0.0.2",
+  "version": "0.0.3-beta.2",
   "description": "Angular wrapper for Trading View lightweight-charts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release:beta": "npm version prerelease --preid=beta && ng build && cd ../dist/ngx-lightweight-charts && npm publish --tag beta",
+    "release:major": "npm version major && npm publish --tag latest",
+    "release:minor": "npm version minor && npm publish --tag latest",
+    "release:patch": "npm version patch && npm publish --tag latest"
   },
   "repository": {
     "type": "git",
@@ -31,4 +34,3 @@
   },
   "sideEffects": false
 }
-
