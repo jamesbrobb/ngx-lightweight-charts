@@ -26,6 +26,8 @@ import {
   Observable,
   bufferCount
 } from 'rxjs';
+import {SubscribeTestDirective} from "./directives/subscribe-test.directive";
+import {CrosshairSubscribeDirective} from "./directives/crosshair-subscribe.directive";
 
 
 @Component({
@@ -34,7 +36,9 @@ import {
   imports: [
     TVChartDirective,
     TVChartGroupDirective,
-    TVChartBorderDirective
+    TVChartBorderDirective,
+    SubscribeTestDirective,
+    CrosshairSubscribeDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -46,6 +50,9 @@ export class AppComponent {
   volume?: HistogramData<Time>[];
   markers?: SeriesMarker<Time>[];
   rsiValues?: LineData<Time>[];
+
+  subscriptionCount = 0;
+  completed = false;
 
   constructor() {
     this.#data.data$.subscribe(data => {
