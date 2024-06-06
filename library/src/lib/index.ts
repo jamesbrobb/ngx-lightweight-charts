@@ -5,3 +5,4 @@ export {TVChartGroupDirective} from "./chart-group/chart-group.directive";
 
 export * from './charts';
 export * from './styles';
+export * from './utils';

@@ -80,7 +80,7 @@ export class TVCandleStickChartComponent {
   }
 
   #initialiseHistogram(chart: IChartApi): void {
-    this.#histogramSeries = this.chart()?.createAdditionalSeries('Histogram', this.volumeOptions());
+    this.#histogramSeries = this.chart()?.addAdditionalSeries('Histogram', this.volumeOptions());
 
     if(!this.#histogramSeries) {
       return;

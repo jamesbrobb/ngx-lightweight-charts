@@ -122,7 +122,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     this.#series?.setMarkers(markers);
   }
 
-  createAdditionalSeries<ST extends SeriesType, HSI = Time>(
+  addAdditionalSeries<ST extends SeriesType, HSI = Time>(
     type: ST,
     seriesOptions: SeriesPartialOptionsMap[ST]
   ): ISeriesApi<ST, HSI> | undefined {
