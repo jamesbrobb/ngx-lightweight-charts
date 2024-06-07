@@ -1,9 +1,9 @@
 import {MouseEventParams, SeriesType, Time} from "lightweight-charts";
-import {Handler} from "./subscription-handler";
+import {SubscriptionHandler} from "./subscription-stream-handler";
 import {TVChart} from "../charts";
 
 
-export class ChartDblClickHandler<T extends SeriesType> implements Handler<MouseEventParams<Time>> {
+export class ChartDblClickHandler<T extends SeriesType> implements SubscriptionHandler<MouseEventParams<Time>> {
 
   readonly #chart: TVChart<T>;
 

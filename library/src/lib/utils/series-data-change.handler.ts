@@ -1,9 +1,9 @@
 import {DataChangedScope, SeriesType} from "lightweight-charts";
-import {Handler} from "./subscription-handler";
+import {SubscriptionHandler} from "./subscription-stream-handler";
 import {TVChart} from "../charts";
 
 
-export class SeriesDataChangeHandler<T extends SeriesType> implements Handler<DataChangedScope> {
+export class SeriesDataChangeHandler<T extends SeriesType> implements SubscriptionHandler<DataChangedScope> {
 
   readonly #chart: TVChart<T>;
 

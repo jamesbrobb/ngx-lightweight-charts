@@ -5,11 +5,12 @@ import {
   HistogramData,
   HistogramSeriesPartialOptions,
   IChartApi,
-  ISeriesApi
+  ISeriesApi, Time
 } from "lightweight-charts";
 
 import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
 import {TVChart} from "../tv-chart";
+import {tvChartProvider} from "../tv-chart.provider";
 
 
 const DEFAULT_DARK_SERIES_OPTIONS: CandlestickSeriesPartialOptions = {
@@ -34,7 +35,7 @@ const DEFAULT_HISTOGRAM_SERIES_OPTIONS: HistogramSeriesPartialOptions = {
   selector: 'tv-candlestick-chart',
   standalone: true,
   imports: [TVChartDirective],
-  providers: [TVChart],
+  providers: [tvChartProvider],
   hostDirectives: [{
     directive: TVChartInputsDirective,
     inputs: ['id', 'options', 'markers']
@@ -68,19 +69,27 @@ export class TVCandleStickChartComponent {
       if(!data || !chart) {
         return;
       }
-      this.#setVolume(data, chart);
+      this.#setVolume(data);
     });
   }
 
-  #setVolume(data: HistogramData[], chart: IChartApi): void {
+  #setVolume(data: HistogramData[]): void {
     if(!this.#histogramSeries) {
-      this.#initialiseHistogram(chart);
+      this.#initialiseHistogram();
     }
     this.#histogramSeries!.setData(data);
   }
 
-  #initialiseHistogram(chart: IChartApi): void {
-    this.#histogramSeries = this.chart()?.addAdditionalSeries('Histogram', this.volumeOptions());
+  #initialiseHistogram(): void {
+
+    const chart = this.chart();
+
+    if(!chart) {
+      console.warn('TVCandleStickChartComponent::initialiseHistogram - Chart not initialised')
+      return;
+    }
+
+    ({series: this.#histogramSeries} = chart.addAdditionalSeries<'Histogram', Time>('Histogram', this.volumeOptions()));
 
     if(!this.#histogramSeries) {
       return;

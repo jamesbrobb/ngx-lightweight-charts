@@ -19,6 +19,7 @@ import {
 } from "lightweight-charts";
 
 import {TVChart} from "./tv-chart";
+import {tvChartExistenceCheckProvider} from "./tv-chart.provider";
 
 
 export const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {
@@ -89,13 +90,7 @@ export class TVChartInputsDirective<HorzScaleItem = Time> {
 @Directive({
   selector: '[tvChart]',
   standalone: true,
-  providers: [{
-    provide: TVChart,
-    useFactory: () => {
-      const parentChart = inject(TVChart, {optional: true, skipSelf: true});
-      return parentChart || new TVChart();
-    }
-  }],
+  providers: [tvChartExistenceCheckProvider],
   hostDirectives: [{
     directive: TVChartInputsDirective,
     inputs: ['id', 'options', 'markers']

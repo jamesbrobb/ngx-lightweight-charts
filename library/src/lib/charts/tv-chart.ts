@@ -1,5 +1,5 @@
+import {BehaviorSubject} from "rxjs";
 import {
-  createChart,
   ChartOptions,
   DeepPartial,
   IChartApi,
@@ -10,16 +10,17 @@ import {
   SeriesType,
   Time, ITimeScaleApi, IPriceScaleApi
 } from "lightweight-charts";
-import {BehaviorSubject, delay} from "rxjs";
-
-
-export type SeriesCreationFn<T extends SeriesType, HorzScaleItem> = (options: SeriesPartialOptionsMap[T]) => ISeriesApi<T, HorzScaleItem>;
+import {SeriesFactory, SeriesFactoryReturnType} from "../series";
+import {ChartFactory} from "../chart";
 
 
 export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
 
   readonly #initialised = new BehaviorSubject<boolean>(false);
   readonly initialised$ = this.#initialised.asObservable();
+
+  readonly #chartFactory: ChartFactory;
+  readonly #seriesFactory: SeriesFactory;
 
   #id?: string;
   #type?: T;
@@ -67,6 +68,11 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     return this.#initialised.value;
   }
 
+  constructor(chartFactory: ChartFactory, seriesFactory: SeriesFactory) {
+    this.#chartFactory = chartFactory;
+    this.#seriesFactory = seriesFactory;
+  }
+
   initialise(
     element: HTMLElement,
     type: T,
@@ -83,7 +89,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     this.#type = type;
     this.#init(element, type, options, seriesOptions);
 
-    if(!this.chart) {
+    if(!this.#chart) {
       return;
     }
 
@@ -125,14 +131,13 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   addAdditionalSeries<ST extends SeriesType, HSI = Time>(
     type: ST,
     seriesOptions: SeriesPartialOptionsMap[ST]
-  ): ISeriesApi<ST, HSI> | undefined {
+  ): SeriesFactoryReturnType<ST, HSI>  {
 
     if(!this.isInitialised) {
       this.#uninitialisedWarning();
-      return;
     }
 
-    return this.#createSeries(type, this.#chart!, seriesOptions);
+    return this.#seriesFactory.create<ST, HSI>(type, this.#chart!, seriesOptions);
   }
 
   removeSeries(series?: ISeriesApi<SeriesType, HorzScaleItem>): void {
@@ -156,55 +161,8 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   }
 
   #init(element: HTMLElement, type: T, options: DeepPartial<ChartOptions>, seriesOptions: SeriesPartialOptionsMap[T]) {
-
-    this.#chart = createChart(element, options);
-    this.#series = this.#createSeries(type, this.#chart, seriesOptions);
-  }
-
-  #createSeries<ST extends SeriesType, HSI = Time>(
-    type: ST,
-    chart: IChartApi,
-    seriesOptions: SeriesPartialOptionsMap[ST]
-  ): ISeriesApi<ST, HSI> | undefined {
-
-    const fn: SeriesCreationFn<ST, HSI> | undefined = this.#getSeriesCreationFn(type, chart);
-
-    if(!fn) {
-      return;
-    }
-
-    return fn.call(this.#chart, seriesOptions);
-  }
-
-  #getSeriesCreationFn<ST extends SeriesType, HSI = Time>(type: ST, chart: IChartApi): SeriesCreationFn<ST, HSI> | undefined {
-
-    let fn: any | undefined;
-
-    switch(type) {
-      case 'Candlestick':
-        fn = chart.addCandlestickSeries;
-        break;
-      case 'Histogram':
-        fn = chart.addHistogramSeries;
-        break;
-      case 'Line':
-        fn = chart.addLineSeries;
-        break;
-      case 'Area':
-        fn = chart.addAreaSeries;
-        break;
-      case 'Bar':
-        fn = chart.addBarSeries;
-        break;
-      case 'Baseline':
-        fn = chart.addBaselineSeries;
-        break;
-      case 'Custom':
-        fn = chart.addCustomSeries;
-        break;
-    }
-
-    return fn as SeriesCreationFn<ST, HSI> | undefined;
+    ({chart: this.#chart} = this.#chartFactory.create(element, options));
+    ({series: this.#series} = this.#seriesFactory.create<T, HorzScaleItem>(type, this.#chart, seriesOptions));
   }
 
   #uninitialisedWarning() {

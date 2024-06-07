@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
 import {TVChart} from "../tv-chart";
 import {HistogramData, HistogramSeriesPartialOptions, Time} from "lightweight-charts";
+import {tvChartProvider} from "../tv-chart.provider";
 
 
 const DEFAULT_HISTOGRAM_SERIES_OPTIONS: HistogramSeriesPartialOptions = {
@@ -16,7 +17,7 @@ const DEFAULT_HISTOGRAM_SERIES_OPTIONS: HistogramSeriesPartialOptions = {
   selector: 'tv-histogram-chart',
   standalone: true,
   imports: [TVChartDirective],
-  providers: [TVChart],
+  providers: [tvChartProvider],
   hostDirectives: [{
     directive: TVChartInputsDirective,
     inputs: ['id', 'options', 'markers']

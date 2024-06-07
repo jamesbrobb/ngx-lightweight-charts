@@ -5,4 +5,4 @@ export {SeriesDataChangeHandler} from "./series-data-change.handler";
 export {ChartClickHandler} from "./chart-click.handler";
 export {ChartDblClickHandler} from "./chart-dbl-click.handler";
 export {ChartCrosshairMoveHandler} from "./chart-crosshair-move.handler";
-export {SubscriptionHandler, Handler} from "./subscription-handler";
+export {SubscriptionStreamHandler, SubscriptionHandler} from "./subscription-stream-handler";

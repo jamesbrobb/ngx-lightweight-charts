@@ -1,9 +1,9 @@
 import {SeriesType} from "lightweight-charts";
-import {Handler} from "./subscription-handler";
+import {SubscriptionHandler} from "./subscription-stream-handler";
 import {TVChart} from "../charts";
 
 
-export class TimescaleSizeChangeHandler<T extends SeriesType> implements Handler<number> {
+export class TimescaleSizeChangeHandler<T extends SeriesType> implements SubscriptionHandler<number> {
 
   readonly #chart: TVChart<T>;
 
