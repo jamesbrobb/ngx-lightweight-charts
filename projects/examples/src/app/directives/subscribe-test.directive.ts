@@ -1,7 +1,17 @@
 import {computed, Directive, inject} from "@angular/core";
 import {TVChartCollectorDirective} from "ngx-lightweight-charts";
 import {IChartApi, MouseEventHandler, MouseEventParams, Time} from "lightweight-charts";
-import {share, Subject, tap} from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  fromEventPattern,
+  mergeMap,
+  share,
+  Subject, switchMap,
+  takeUntil,
+  tap,
+  withLatestFrom
+} from "rxjs";
 
 
 @Directive({
@@ -27,22 +37,28 @@ export class ChartSubscriber {
 
   readonly #chart: IChartApi;
 
-  readonly #crossHairPosition = new Subject();
-  readonly crossHairPosition$ = this.#crossHairPosition.asObservable().pipe(
-    tap({
-      subscribe: () => {
-        console.log('Subscribed to crosshair position events');
-        this.subscribeHandler();
-      },
-      unsubscribe: () => {
-        console.log('Unsubscribed to crosshair position events');
-        this.unsubscribeHandler();
-      },
-      finalize: () => {
-        console.log('finalized to crosshair position events')
-        this.unsubscribeHandler();
-      }
-    }),
+  readonly subscribeHandler = (handler: (event: MouseEventParams<Time>) => void) => {
+    console.log('Subscribing to crosshair move');
+    this.#chart.subscribeCrosshairMove(handler);
+  }
+
+  readonly unsubscribeHandler = (handler: (event: MouseEventParams<Time>) => void) => {
+    console.log('Unsubscribing from crosshair move');
+    this.#chart.unsubscribeCrosshairMove(handler);
+  }
+
+  readonly #destroy = new Subject();
+  readonly destroy$ = this.#destroy.asObservable();
+
+  readonly handler$ = fromEventPattern<MouseEventParams<Time> | undefined>(
+    this.subscribeHandler,
+    this.unsubscribeHandler
+  )
+
+  readonly crossHairPosition = new BehaviorSubject<MouseEventParams<Time> | undefined>(undefined);
+  readonly crossHairPosition$ = this.crossHairPosition.asObservable().pipe(
+    switchMap(() => this.handler$),
+    takeUntil(this.destroy$),
     share()
   );
 
@@ -50,19 +66,9 @@ export class ChartSubscriber {
     this.#chart = chart;
   }
 
-  subscribeHandler() {
-    this.#chart.subscribeCrosshairMove(this.#crosshairHandler);
-  }
-
-  unsubscribeHandler() {
-    this.#chart.unsubscribeCrosshairMove(this.#crosshairHandler);
-  }
-
   complete() {
-    this.#crossHairPosition.complete();
-  }
-
-  readonly #crosshairHandler: MouseEventHandler<Time> = (event: MouseEventParams<Time>) => {
-    this.#crossHairPosition.next(event);
+    this.#destroy.next(true);
+    this.#destroy.complete();
+    this.crossHairPosition.complete();
   }
 }

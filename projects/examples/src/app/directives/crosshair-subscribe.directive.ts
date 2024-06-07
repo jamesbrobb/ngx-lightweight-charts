@@ -37,6 +37,9 @@ export class CrosshairSubscribeDirective {
         this.subscriptions.push(subscriber.crossHairPosition$.subscribe({
           next: (position) => {
             console.log('Crosshair position', position);
+          },
+          complete: () => {
+            console.log('Crosshair subscription complete');
           }
         }));
       }
