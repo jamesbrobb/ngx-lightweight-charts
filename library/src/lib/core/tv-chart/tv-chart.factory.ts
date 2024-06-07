@@ -1,7 +1,7 @@
 import {SeriesType} from "lightweight-charts";
 import {TVChart} from "./tv-chart";
-import {ChartFactory} from "../chart";
-import {SeriesFactory} from "../series";
+import {ChartFactory} from "../core/chart";
+import {SeriesFactory} from "../core/series";
 
 
 export function tvChartFactory<T extends SeriesType>(
