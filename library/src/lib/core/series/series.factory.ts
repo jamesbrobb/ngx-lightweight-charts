@@ -1,4 +1,6 @@
 import {IChartApi, ISeriesApi, SeriesPartialOptionsMap, SeriesType, Time} from "lightweight-charts";
+import {SeriesStreams} from "./series-streams";
+import {SeriesSubscriptions} from "./series.types";
 
 
 type SeriesCreationFn<T extends SeriesType, HorzScaleItem = Time> = (options: SeriesPartialOptionsMap[T]) => ISeriesApi<T, HorzScaleItem>;
@@ -6,9 +8,8 @@ type SeriesCreationFn<T extends SeriesType, HorzScaleItem = Time> = (options: Se
 
 export type SeriesFactoryReturnType<T extends SeriesType, HorzScaleItem = Time> = {
   series: ISeriesApi<T, HorzScaleItem> | undefined;
-  dataChangeHandler: any | undefined
+  seriesSubscriptions: SeriesSubscriptions | undefined;
 }
-
 
 
 export class SeriesFactory {
@@ -19,7 +20,8 @@ export class SeriesFactory {
     seriesOptions: SeriesPartialOptionsMap[T]
   ): SeriesFactoryReturnType<T, HorzScaleItem> {
 
-    const series = this.#createSeries<T, HorzScaleItem>(type, chart, seriesOptions);
+    const series = this.#createSeries<T, HorzScaleItem>(type, chart, seriesOptions),
+      seriesSubscriptions = series ? new SeriesStreams(series) : undefined;
 
     if(!series) {
       console.log(`Series of type ${type} could not be created`);
@@ -27,7 +29,7 @@ export class SeriesFactory {
 
     return {
       series,
-      dataChangeHandler: undefined
+      seriesSubscriptions
     }
   }
 

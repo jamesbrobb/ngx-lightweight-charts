@@ -57,7 +57,7 @@ export class ChartSubscriber {
 
   readonly crossHairPosition = new BehaviorSubject<MouseEventParams<Time> | undefined>(undefined);
   readonly crossHairPosition$ = this.crossHairPosition.asObservable().pipe(
-    switchMap(() => this.handler$),
+    mergeMap(() => this.handler$),
     takeUntil(this.destroy$),
     share()
   );

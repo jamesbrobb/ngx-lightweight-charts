@@ -1,42 +1,43 @@
 import {BehaviorSubject, fromEventPattern, share, Subject, switchMap, takeUntil} from "rxjs";
 
 
-export type HandlerFn<T> = (arg: T) => void;
-
-export interface SubscriptionHandler<T> {
-  subscribe(handler: HandlerFn<T>): void;
-  unsubscribe(handler: HandlerFn<T>): void;
-}
+export type HandlerCallbackFn<T> = (arg: T) => void;
+export type SubHandlerFn<T> = (handler: HandlerCallbackFn<T>) => void
 
 
-export class SubscriptionStreamHandler<T> {
+export class SubscriptionStreamHandler<Param> {
 
-  readonly #handler: SubscriptionHandler<T>;
+  readonly #subscribeFn: SubHandlerFn<Param>;
+  readonly #unsubscribeFn: SubHandlerFn<Param>;
+
+  readonly #subject = new BehaviorSubject<Param | undefined>(undefined);
+
   readonly #destroy = new Subject();
   readonly #destroy$ = this.#destroy.asObservable();
 
-  readonly #subscribeHandler = (handler: HandlerFn<T>) => {
-    this.#handler.subscribe(handler);
+  readonly #subscribeHandler = (handler: HandlerCallbackFn<Param>): void => {
+    this.#subscribeFn(handler);
   }
 
-  readonly #unsubscribeHandler = (handler: HandlerFn<T>) => {
-    this.#handler.unsubscribe(handler);
+  readonly #unsubscribeHandler = (handler: HandlerCallbackFn<Param>): void => {
+    this.#unsubscribeFn(handler);
   }
 
-  readonly #eventHandler$ = fromEventPattern<T>(
-    this.#subscribeHandler,
-    this.#unsubscribeHandler
-  )
-
-  readonly #subject = new BehaviorSubject<T | undefined>(undefined);
   readonly stream$ = this.#subject.asObservable().pipe(
-    switchMap(() => this.#eventHandler$),
+    switchMap(() => fromEventPattern<Param>(
+      this.#subscribeHandler,
+      this.#unsubscribeHandler
+    )),
     takeUntil(this.#destroy$),
     share()
   );
 
-  constructor(handler: SubscriptionHandler<T>) {
-    this.#handler = handler;
+  constructor(
+    subscribeFn: SubHandlerFn<Param>,
+    unsubscribeFn: SubHandlerFn<Param>
+  ) {
+    this.#subscribeFn = subscribeFn;
+    this.#unsubscribeFn = unsubscribeFn;
   }
 
   destroy(): void {
