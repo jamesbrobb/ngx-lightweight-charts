@@ -17,9 +17,8 @@ import {
   SeriesType,
   Time,
 } from "lightweight-charts";
-
-import {TVChart} from "./tv-chart";
-import {tvChartExistenceCheckProvider} from "./tv-chart.provider";
+import {TVChart} from "../../core";
+import {tvChartExistenceCheckProvider} from "../providers/tv-chart.provider";
 
 
 export const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {

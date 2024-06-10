@@ -5,4 +5,3 @@ export {TVBarChartDirective} from "./bar-chart/bar-chart.directive";
 export {TVBaselineChartComponent} from "./baseline-chart/baseline-chart.component";
 export {TVAreaChartComponent} from "./area-chart/area-chart.component";
 export {TVChartDirective, TVChartInputsDirective} from "./chart.directive";
-export {TVChart} from "./tv-chart";

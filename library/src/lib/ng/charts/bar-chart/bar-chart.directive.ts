@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {BarData, BarSeriesPartialOptions, Time} from "lightweight-charts";
 import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
-import {tvChartProvider} from "../tv-chart.provider";
+import {tvChartProvider} from "../../providers/tv-chart.provider";
 
 
 const DEFAULT_BAR_SERIES_OPTIONS: BarSeriesPartialOptions = {

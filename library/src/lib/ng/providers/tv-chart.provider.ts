@@ -1,9 +1,6 @@
 import {inject, Provider} from "@angular/core";
-import {TVChart} from "./tv-chart";
-import {ChartFactory} from "../core/chart";
-import {SeriesFactory} from "../core/series";
-import {tvChartFactory} from "./tv-chart.factory";
 import {SeriesType} from "lightweight-charts";
+import {ChartFactory, SeriesFactory, tvChartFactory, TVChart} from "../../core";
 
 
 export const tvChartProvider: Provider = {

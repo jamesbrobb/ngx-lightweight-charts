@@ -1,7 +1,7 @@
 import {filter, map} from "rxjs";
 import {Directive, inject} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from "@angular/core/rxjs-interop";
-import {TVChart} from "../charts";
+import {TVChart} from "../../core";
 
 
 @Directive({

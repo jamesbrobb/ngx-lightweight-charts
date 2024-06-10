@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
 import {LineData, LineSeriesPartialOptions, Time} from "lightweight-charts";
-import {tvChartProvider} from "../tv-chart.provider";
+import {tvChartProvider} from "../../providers/tv-chart.provider";
 
 
 @Component({

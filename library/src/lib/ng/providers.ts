@@ -1,6 +1,5 @@
 import {EnvironmentProviders, makeEnvironmentProviders} from "@angular/core";
-import {ChartFactory} from "./chart";
-import {SeriesFactory} from "./series";
+import {ChartFactory, SeriesFactory} from "../core";
 
 
 export function getTVChartProviders(): EnvironmentProviders {

@@ -4,13 +4,13 @@ import {
   CandlestickSeriesPartialOptions,
   HistogramData,
   HistogramSeriesPartialOptions,
-  IChartApi,
-  ISeriesApi, Time
+  ISeriesApi,
+  Time
 } from "lightweight-charts";
 
 import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
-import {TVChart} from "../tv-chart";
-import {tvChartProvider} from "../tv-chart.provider";
+import {tvChartProvider} from "../../providers/tv-chart.provider";
+import {TVChart} from "../../../core/tv-chart/tv-chart";
 
 
 const DEFAULT_DARK_SERIES_OPTIONS: CandlestickSeriesPartialOptions = {

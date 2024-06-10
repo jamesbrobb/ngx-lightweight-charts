@@ -1,7 +1,7 @@
 import {bufferCount, filter, from, map, mergeMap, switchMap} from "rxjs";
 import {contentChildren, Directive} from '@angular/core';
 import {takeUntilDestroyed, toObservable, toSignal} from "@angular/core/rxjs-interop";
-import {TVChart} from "../charts";
+import {TVChart} from "../../core";
 
 
 @Directive({

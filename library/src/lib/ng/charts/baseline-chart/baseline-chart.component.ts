@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {BaselineData, BaselineSeriesPartialOptions, Time} from "lightweight-charts";
 import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
-import {AreaData, AreaSeriesPartialOptions, Time} from "lightweight-charts";
-import {tvChartProvider} from "../tv-chart.provider";
+import {tvChartProvider} from "../../providers/tv-chart.provider";
 
 
 @Component({
-  selector: 'tv-area-chart',
+  selector: 'tv-baseline-chart',
   standalone: true,
   imports: [TVChartDirective],
   providers: [tvChartProvider],
@@ -13,13 +13,13 @@ import {tvChartProvider} from "../tv-chart.provider";
     directive: TVChartInputsDirective,
     inputs: ['id', 'options', 'markers']
   }],
-  templateUrl: './area-chart.component.html',
-  styleUrl: './area-chart.component.scss',
+  templateUrl: './baseline-chart.component.html',
+  styleUrl: './baseline-chart.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TVAreaChartComponent {
-  seriesOptions = input<AreaSeriesPartialOptions>({});
-  points = input<AreaData<Time>[]>();
+export class TVBaselineChartComponent {
+  seriesOptions = input<BaselineSeriesPartialOptions>({});
+  points = input<BaselineData<Time>[]>();
 
   readonly inputs = inject(TVChartInputsDirective);
 }
