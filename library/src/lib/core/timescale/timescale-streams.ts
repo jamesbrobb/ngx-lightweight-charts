@@ -4,12 +4,12 @@ import {SubscriptionStreamHandler} from "../subscriptions";
 import {Observable} from "rxjs";
 
 
-export class TimescaleStreams implements TimescaleSubscriptions {
-  readonly #visibleTimeRangeChange: SubscriptionStreamHandler<Range<Time> | null>;
+export class TimescaleStreams<HorzScaleItem = Time> implements TimescaleSubscriptions<HorzScaleItem> {
+  readonly #visibleTimeRangeChange: SubscriptionStreamHandler<Range<HorzScaleItem> | null>;
   readonly #visibleLogicalRangeChange: SubscriptionStreamHandler<LogicalRange | null>;
   readonly #sizeChange: SubscriptionStreamHandler<number>;
 
-  get visibleTimeRangeChange$(): Observable<Range<Time> | null> {
+  get visibleTimeRangeChange$(): Observable<Range<HorzScaleItem> | null> {
     return this.#visibleTimeRangeChange.stream$;
   }
 
@@ -21,18 +21,18 @@ export class TimescaleStreams implements TimescaleSubscriptions {
     return this.#sizeChange.stream$;
   }
 
-  constructor(timescale: ITimeScaleApi<Time>) {
+  constructor(timescale: ITimeScaleApi<HorzScaleItem>) {
     this.#visibleTimeRangeChange = new SubscriptionStreamHandler(
-      timescale.subscribeVisibleTimeRangeChange,
-      timescale.unsubscribeVisibleTimeRangeChange
+      timescale.subscribeVisibleTimeRangeChange.bind(timescale),
+      timescale.unsubscribeVisibleTimeRangeChange.bind(timescale)
     );
     this.#visibleLogicalRangeChange = new SubscriptionStreamHandler(
-      timescale.subscribeVisibleLogicalRangeChange,
-      timescale.unsubscribeVisibleLogicalRangeChange
+      timescale.subscribeVisibleLogicalRangeChange.bind(timescale),
+      timescale.unsubscribeVisibleLogicalRangeChange.bind(timescale)
     );
     this.#sizeChange = new SubscriptionStreamHandler(
-      timescale.subscribeSizeChange,
-      timescale.unsubscribeSizeChange
+      timescale.subscribeSizeChange.bind(timescale),
+      timescale.unsubscribeSizeChange.bind(timescale)
     );
   }
 
