@@ -13,8 +13,8 @@ export class SeriesStreams<T extends SeriesType, HorzScaleItem = Time> implement
 
   constructor(series: ISeriesApi<T, HorzScaleItem>) {
     this.#dataChange = new SubscriptionStreamHandler(
-      series.subscribeDataChanged,
-      series.unsubscribeDataChanged
+      series.subscribeDataChanged.bind(series),
+      series.unsubscribeDataChanged.bind(series)
     );
   }
 

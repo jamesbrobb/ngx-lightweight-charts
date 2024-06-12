@@ -1,4 +1,4 @@
-import {IChartApi, ISeriesApi, SeriesPartialOptionsMap, SeriesType, Time} from "lightweight-charts";
+import {IChartApiBase, ISeriesApi, SeriesPartialOptionsMap, SeriesType, Time} from "lightweight-charts";
 import {SeriesStreams} from "./series-streams";
 import {SeriesSubscriptions} from "./series.types";
 
@@ -7,8 +7,8 @@ type SeriesCreationFn<T extends SeriesType, HorzScaleItem = Time> = (options: Se
 
 
 export type SeriesFactoryReturnType<T extends SeriesType, HorzScaleItem = Time> = {
-  series: ISeriesApi<T, HorzScaleItem> | undefined;
-  seriesSubscriptions: SeriesSubscriptions | undefined;
+  series?: ISeriesApi<T, HorzScaleItem>
+  seriesSubscriptions?: SeriesSubscriptions
 }
 
 
@@ -16,7 +16,7 @@ export class SeriesFactory {
 
   create<T extends SeriesType, HorzScaleItem = Time>(
     type: T,
-    chart: IChartApi,
+    chart: IChartApiBase<HorzScaleItem>,
     seriesOptions: SeriesPartialOptionsMap[T]
   ): SeriesFactoryReturnType<T, HorzScaleItem> {
 
@@ -35,7 +35,7 @@ export class SeriesFactory {
 
   #createSeries<T extends SeriesType, HorzScaleItem>(
     type: T,
-    chart: IChartApi,
+    chart: IChartApiBase<HorzScaleItem>,
     seriesOptions: SeriesPartialOptionsMap[T]
   ): ISeriesApi<T, HorzScaleItem> | undefined {
 
@@ -48,7 +48,7 @@ export class SeriesFactory {
     return fn.call(chart, seriesOptions);
   }
 
-  #getSeriesCreationFn<T extends SeriesType, HorzScaleItem>(type: T, chart: IChartApi): SeriesCreationFn<T, HorzScaleItem> | undefined {
+  #getSeriesCreationFn<T extends SeriesType, HorzScaleItem>(type: T, chart: IChartApiBase<HorzScaleItem>): SeriesCreationFn<T, HorzScaleItem> | undefined {
 
     let fn: any | undefined;
 
