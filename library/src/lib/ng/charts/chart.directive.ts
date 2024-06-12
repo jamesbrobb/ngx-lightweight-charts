@@ -2,23 +2,27 @@ import deepmerge from "deepmerge";
 import {
   Directive,
   ElementRef,
+  OnInit,
   OnDestroy,
   inject,
   input,
-  effect, OnInit
+  effect,
 } from '@angular/core';
 
 import {
-  ChartOptions, ColorType,
-  DeepPartial, LineStyle,
+  ChartOptions,
+  ColorType,
+  DeepPartial,
+  LineStyle,
   SeriesDataItemTypeMap,
-  SeriesMarker,
   SeriesPartialOptionsMap,
-  SeriesType,
-  Time,
+  SeriesType
 } from "lightweight-charts";
 import {TVChart} from "../../core";
 import {tvChartExistenceCheckProvider} from "../providers/tv-chart.provider";
+import {outputFromObservable} from "@angular/core/rxjs-interop";
+import {TVChartInputsDirective, tvChartInputsDirectiveHostDef} from "./chart-inputs.directive";
+import {tvChartOutputsDirectiveHostDef} from "./charts-outputs.directive";
 
 
 export const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {
@@ -75,27 +79,19 @@ const DEFAULT_DARK_CHART_OPTIONS: DeepPartial<ChartOptions> = deepmerge(
 });
 
 
-@Directive({
-  selector: '[tvChartInputs]',
-  standalone: true,
-})
-export class TVChartInputsDirective<HorzScaleItem = Time> {
-  id = input<string>();
-  options = input<DeepPartial<ChartOptions>>();
-  markers = input<SeriesMarker<HorzScaleItem>[]>();
-}
+
 
 
 @Directive({
   selector: '[tvChart]',
   standalone: true,
   providers: [tvChartExistenceCheckProvider],
-  hostDirectives: [{
-    directive: TVChartInputsDirective,
-    inputs: ['id', 'options', 'markers']
-  }]
+  hostDirectives: [
+    tvChartInputsDirectiveHostDef,
+    tvChartOutputsDirectiveHostDef
+  ]
 })
-export class TVChartDirective<T extends SeriesType, HorzScaleItem = Time> implements OnInit, OnDestroy {
+export class TVChartDirective<T extends SeriesType, HorzScaleItem> implements OnInit, OnDestroy {
 
   type = input.required<T>({alias: 'tvChart'});
   seriesOptions = input.required<SeriesPartialOptionsMap[T]>();

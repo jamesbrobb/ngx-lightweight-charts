@@ -1,4 +1,4 @@
-import {filter, map} from "rxjs";
+import {filter, map, tap} from "rxjs";
 import {Directive, inject} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from "@angular/core/rxjs-interop";
 import {TVChart} from "../../core";
@@ -15,8 +15,7 @@ export class TVChartCollectorDirective {
   readonly chart = toSignal(
     this.#chart.initialised$.pipe(
       takeUntilDestroyed(),
-      filter(initialised => !!initialised),
-      map(() => this.#chart)
+      filter(initialised => !!initialised)
     )
   );
 }

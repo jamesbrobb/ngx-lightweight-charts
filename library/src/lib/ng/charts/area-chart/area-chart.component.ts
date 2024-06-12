@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
-import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
 import {AreaData, AreaSeriesPartialOptions, Time} from "lightweight-charts";
+import {TVChartDirective} from "../chart.directive";
 import {tvChartProvider} from "../../providers/tv-chart.provider";
+import {TVChartInputsDirective, tvChartInputsDirectiveHostDef} from "../chart-inputs.directive";
+import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 
 
 @Component({
@@ -9,10 +11,10 @@ import {tvChartProvider} from "../../providers/tv-chart.provider";
   standalone: true,
   imports: [TVChartDirective],
   providers: [tvChartProvider],
-  hostDirectives: [{
-    directive: TVChartInputsDirective,
-    inputs: ['id', 'options', 'markers']
-  }],
+  hostDirectives: [
+    tvChartInputsDirectiveHostDef,
+    tvChartOutputsDirectiveHostDef
+  ],
   templateUrl: './area-chart.component.html',
   styleUrl: './area-chart.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

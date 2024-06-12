@@ -4,13 +4,14 @@ import {
   CandlestickSeriesPartialOptions,
   HistogramData,
   HistogramSeriesPartialOptions,
-  ISeriesApi,
-  Time
+  ISeriesApi
 } from "lightweight-charts";
 
-import {TVChartDirective, TVChartInputsDirective} from "../chart.directive";
+import {TVChartDirective} from "../chart.directive";
+import {TVChartInputsDirective, tvChartInputsDirectiveHostDef} from "../chart-inputs.directive";
 import {tvChartProvider} from "../../providers/tv-chart.provider";
-import {TVChart} from "../../../core/tv-chart/tv-chart";
+import {TVChart} from "../../../core";
+import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 
 
 const DEFAULT_DARK_SERIES_OPTIONS: CandlestickSeriesPartialOptions = {
@@ -36,29 +37,29 @@ const DEFAULT_HISTOGRAM_SERIES_OPTIONS: HistogramSeriesPartialOptions = {
   standalone: true,
   imports: [TVChartDirective],
   providers: [tvChartProvider],
-  hostDirectives: [{
-    directive: TVChartInputsDirective,
-    inputs: ['id', 'options', 'markers']
-  }],
+  hostDirectives: [
+    tvChartInputsDirectiveHostDef,
+    tvChartOutputsDirectiveHostDef
+  ],
   templateUrl: './candlestick-chart.component.html',
   styleUrl: './candlestick-chart.component.scss'
 })
-export class TVCandleStickChartComponent {
+export class TVCandleStickChartComponent<HorzScaleItem> {
 
   seriesOptions = input<CandlestickSeriesPartialOptions>({});
   volumeOptions = input<HistogramSeriesPartialOptions>(DEFAULT_HISTOGRAM_SERIES_OPTIONS);
 
-  klines = input<CandlestickData[]>();
-  volume = input<HistogramData[]>();
+  klines = input<CandlestickData<HorzScaleItem>[]>();
+  volume = input<HistogramData<HorzScaleItem>[]>();
 
-  chart = viewChild<TVChartDirective<'Candlestick'>, TVChart<'Candlestick'>>(
-    TVChartDirective,
+  chart = viewChild<TVChartDirective<'Candlestick', HorzScaleItem>, TVChart<'Candlestick', HorzScaleItem>>(
+    TVChartDirective<'Candlestick', HorzScaleItem>,
     {read: TVChart}
   );
 
-  readonly inputs = inject(TVChartInputsDirective);
+  readonly inputs = inject(TVChartInputsDirective<HorzScaleItem>);
 
-  #histogramSeries?: ISeriesApi<'Histogram'>;
+  #histogramSeries?: ISeriesApi<'Histogram', HorzScaleItem>;
 
   constructor() {
 
@@ -73,7 +74,7 @@ export class TVCandleStickChartComponent {
     });
   }
 
-  #setVolume(data: HistogramData[]): void {
+  #setVolume(data: HistogramData<HorzScaleItem>[]): void {
     if(!this.#histogramSeries) {
       this.#initialiseHistogram();
     }
@@ -89,7 +90,7 @@ export class TVCandleStickChartComponent {
       return;
     }
 
-    ({series: this.#histogramSeries} = chart.addAdditionalSeries<'Histogram', Time>('Histogram', this.volumeOptions()));
+    ({series: this.#histogramSeries} = chart.addAdditionalSeries<'Histogram'>('Histogram', this.volumeOptions()));
 
     if(!this.#histogramSeries) {
       return;
