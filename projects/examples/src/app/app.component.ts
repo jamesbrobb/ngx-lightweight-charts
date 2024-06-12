@@ -10,7 +10,13 @@ import {
 } from "lightweight-charts";
 import {Table} from "apache-arrow";
 import {TABLE_DATA} from "./loader/arrow_loader";
-import {TVChartDirective, TVChartGroupDirective, TVChartBorderDirective} from "ngx-lightweight-charts";
+import {
+  TVChartDirective,
+  TVChartGroupDirective,
+  TVChartBorderDirective,
+  TVChartSyncDirective,
+  TVCandleStickChartComponent
+} from "ngx-lightweight-charts";
 
 import {
   interval,
@@ -37,6 +43,8 @@ import {CrosshairSubscribeDirective} from "./directives/crosshair-subscribe.dire
     TVChartDirective,
     TVChartGroupDirective,
     TVChartBorderDirective,
+    TVChartSyncDirective,
+    TVCandleStickChartComponent,
     SubscribeTestDirective,
     CrosshairSubscribeDirective
   ],
@@ -53,6 +61,7 @@ export class AppComponent {
 
   subscriptionCount = 0;
   completed = false;
+  showChart = true;
 
   constructor() {
     this.#data.data$.subscribe(data => {
@@ -60,6 +69,10 @@ export class AppComponent {
     });
 
     //this.testIt();
+  }
+
+  onChartAction(arg: any) {
+    console.log(arg);
   }
 
   #parseData(table: Table | undefined): void {
