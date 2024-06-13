@@ -1,7 +1,7 @@
 <button (click)="showChart = !showChart">Toggle chart</button>
 
 <hr/>
-<div tvChartGroup tvChartSync tvChartCollector tvChartBorder [borderColor]="'#ff0000'">
+<div tvChartGroup tvChartSync tvChartCollector [tvChartBorder]="{borderColor:'#ff0000'}">
   <!--<div tvChart="Histogram" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"
        subscribeTest crosshairSubscribe [subscriptionCount]="subscriptionCount" [completed]="completed"></div>
   <div tvChart="Line" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>-->
