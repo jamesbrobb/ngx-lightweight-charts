@@ -1,6 +1,6 @@
 import {Directive, effect, inject} from '@angular/core';
-import {TVChartsCollectorDirective} from "../charts-collector/charts-collector.directive";
 import {SyncService} from "../../core";
+import {TVChartCollectorDirective} from "../chart-collector/chart-collector.directive";
 
 
 @Directive({
@@ -15,7 +15,7 @@ import {SyncService} from "../../core";
 })
 export class TVChartSyncDirective {
 
-  readonly #collector = inject(TVChartsCollectorDirective);
+  readonly #collector = inject(TVChartCollectorDirective);
   readonly #syncService = inject(SyncService);
 
   constructor() {

@@ -1,14 +1,11 @@
 import {Directive, effect, inject, input} from '@angular/core';
 import {ChartOptions, DeepPartial} from "lightweight-charts";
-import {TVChartsCollectorDirective} from "../charts-collector/charts-collector.directive";
+import {TVChartCollectorDirective} from "../chart-collector/chart-collector.directive";
 
 
 @Directive({
   selector: '[tvChartGroup]',
-  standalone: true,
-  hostDirectives: [
-    TVChartsCollectorDirective
-  ]
+  standalone: true
 })
 export class TVChartGroupDirective {
 
@@ -16,7 +13,7 @@ export class TVChartGroupDirective {
   showAllTimeScales = input<boolean>(false);
   minimumWidth = input<number>(80);
 
-  readonly #collector = inject(TVChartsCollectorDirective);
+  readonly #collector = inject(TVChartCollectorDirective);
 
   constructor() {
     effect(() => {

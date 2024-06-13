@@ -15,7 +15,8 @@ import {
   TVChartGroupDirective,
   TVChartBorderDirective,
   TVChartSyncDirective,
-  TVCandleStickChartComponent
+  TVCandleStickChartComponent,
+  TVChartCollectorDirective
 } from "ngx-lightweight-charts";
 
 import {
@@ -32,8 +33,6 @@ import {
   Observable,
   bufferCount
 } from 'rxjs';
-import {SubscribeTestDirective} from "./directives/subscribe-test.directive";
-import {CrosshairSubscribeDirective} from "./directives/crosshair-subscribe.directive";
 
 
 @Component({
@@ -45,8 +44,7 @@ import {CrosshairSubscribeDirective} from "./directives/crosshair-subscribe.dire
     TVChartBorderDirective,
     TVChartSyncDirective,
     TVCandleStickChartComponent,
-    SubscribeTestDirective,
-    CrosshairSubscribeDirective
+    TVChartCollectorDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -59,8 +57,6 @@ export class AppComponent {
   markers?: SeriesMarker<Time>[];
   rsiValues?: LineData<Time>[];
 
-  subscriptionCount = 0;
-  completed = false;
   showChart = true;
 
   constructor() {

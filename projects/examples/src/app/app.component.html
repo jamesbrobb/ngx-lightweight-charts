@@ -1,21 +1,16 @@
-
-<button (click)="subscriptionCount = subscriptionCount + 1">Increment subscription count</button>
-<button (click)="subscriptionCount = subscriptionCount - 1">Decrement subscription count</button>
-<button (click)="completed = true">Complete</button>
 <button (click)="showChart = !showChart">Toggle chart</button>
-<div>Count: {{subscriptionCount}}</div>
+
 <hr/>
-<div tvChartGroup tvChartSync>
+<div tvChartGroup tvChartSync tvChartCollector tvChartBorder [borderColor]="'#ff0000'">
   <!--<div tvChart="Histogram" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"
        subscribeTest crosshairSubscribe [subscriptionCount]="subscriptionCount" [completed]="completed"></div>
   <div tvChart="Line" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>-->
-  <tv-candlestick-chart [klines]="klines" [options]="{height:400}" (visibleLogicalRangeChanged)="onChartAction($event)"></tv-candlestick-chart>
+  <tv-candlestick-chart tvChartCollector [klines]="klines" [options]="{height:400}" (visibleLogicalRangeChanged)="onChartAction($event)"></tv-candlestick-chart>
   @if(showChart) {
-    <div tvChart="Area"
+    <div tvChart="Area" tvChartCollector
          [seriesOptions]="{}"
          [data]="rsiValues"
          [options]="{height:200}"
-         tvChartBorder [borderColor]="'#ff0000'"
          (visibleLogicalRangeChanged)="onChartAction($event)"
          (chartClick)="onChartAction($event)"></div>
   }

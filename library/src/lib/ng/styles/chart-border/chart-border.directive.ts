@@ -4,8 +4,7 @@ import {TVChartCollectorDirective} from "../../chart-collector/chart-collector.d
 
 @Directive({
   selector: '[tvChartBorder]',
-  standalone: true,
-  hostDirectives: [TVChartCollectorDirective]
+  standalone: true
 })
 export class TVChartBorderDirective {
 
@@ -15,13 +14,15 @@ export class TVChartBorderDirective {
 
   constructor() {
     effect(() => {
-      const chart = this.#collector.chart();
+      const charts = this.#collector.charts();
 
-      if(!chart) {
+      if(!charts) {
         return;
       }
 
-      chart.applyOptions(this.#getStyles());
+      charts.forEach(chart => {
+        chart.applyOptions(this.#getStyles());
+      })
     });
   }
 
