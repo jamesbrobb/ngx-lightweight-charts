@@ -1,17 +1,21 @@
 <button (click)="showChart = !showChart">Toggle chart</button>
+<button (click)="showCharts = !showCharts">Toggle charts</button>
+<button (click)="toggleGroup()">Toggle group</button>
+<button (click)="toggleGroupCollection()">Toggle group collection</button>
+
 
 <hr/>
-<div tvChartGroup tvChartSync tvChartCollector [tvChartBorder]="{borderColor:'#ff0000'}">
-  <!--<div tvChart="Histogram" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"
-       subscribeTest crosshairSubscribe [subscriptionCount]="subscriptionCount" [completed]="completed"></div>
-  <div tvChart="Line" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>-->
-  <tv-candlestick-chart tvChartCollector [klines]="klines" [options]="{height:400}" (visibleLogicalRangeChanged)="onChartAction($event)"></tv-candlestick-chart>
-  @if(showChart) {
-    <div tvChart="Area" tvChartCollector
-         [seriesOptions]="{}"
-         [data]="rsiValues"
-         [options]="{height:200}"
-         (visibleLogicalRangeChanged)="onChartAction($event)"
-         (chartClick)="onChartAction($event)"></div>
+
+<div [tvChartSync]="['one', 'two', 'four']" [tvChartCollector]="groupCollection()">
+  @if(showCharts) {
+  <div [tvChartGroup]="groupCharts()" [groupOptions]="groupOptions" tvChartCollector [tvChartBorder]="{borderColor:'#ff0000'}">
+    <tv-candlestick-chart id="one" [klines]="klines" [options]="{height:200}"></tv-candlestick-chart>
+    @if(showChart) {
+      <div tvChart="Area" id="two" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
+    }
+  </div>
   }
+
+  <div tvChart="Histogram" id="three" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
+  <div tvChart="Line" id="four" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
 </div>

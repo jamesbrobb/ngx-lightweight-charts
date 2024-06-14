@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {
   HistogramData,
   LineData,
@@ -16,7 +16,8 @@ import {
   TVChartBorderDirective,
   TVChartSyncDirective,
   TVCandleStickChartComponent,
-  TVChartCollectorDirective
+  TVChartCollectorDirective,
+  DEFAULT_DARK_CHART_OPTIONS
 } from "ngx-lightweight-charts";
 
 import {
@@ -58,6 +59,14 @@ export class AppComponent {
   rsiValues?: LineData<Time>[];
 
   showChart = true;
+  showCharts = true;
+  groupOptions = DEFAULT_DARK_CHART_OPTIONS
+
+  groupCharts = signal(['one']);
+  groupToggle = false;
+
+  groupCollection = signal(['one', 'four']);
+  groupCollectionToggle = false;
 
   constructor() {
     this.#data.data$.subscribe(data => {
@@ -65,6 +74,16 @@ export class AppComponent {
     });
 
     //this.testIt();
+  }
+
+  toggleGroup() {
+    this.groupToggle = !this.groupToggle;
+    this.groupCharts.set(this.groupToggle ? ['one', 'two'] : ['one']);
+  }
+
+  toggleGroupCollection() {
+    this.groupCollectionToggle = !this.groupCollectionToggle;
+    this.groupCollection.set(this.groupCollectionToggle ? ['one', 'two', 'four'] : ['one', 'four']);
   }
 
   onChartAction(arg: any) {
@@ -199,4 +218,6 @@ export class AppComponent {
       complete: () => console.log('4 completed'),
     });
   }
+
+  protected readonly console = console;
 }
