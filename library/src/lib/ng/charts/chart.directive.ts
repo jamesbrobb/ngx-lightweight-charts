@@ -20,7 +20,6 @@ import {
 } from "lightweight-charts";
 import {TVChart} from "../../core";
 import {tvChartExistenceCheckProvider} from "../providers/tv-chart.provider";
-import {outputFromObservable} from "@angular/core/rxjs-interop";
 import {TVChartInputsDirective, tvChartInputsDirectiveHostDef} from "./chart-inputs.directive";
 import {tvChartOutputsDirectiveHostDef} from "./charts-outputs.directive";
 
@@ -45,7 +44,7 @@ export const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {
 }
 
 
-const DEFAULT_DARK_CHART_OPTIONS: DeepPartial<ChartOptions> = deepmerge(
+export const DEFAULT_DARK_CHART_OPTIONS: DeepPartial<ChartOptions> = deepmerge(
   DEFAULT_CHART_OPTIONS, {
   layout: {
     background: { type: ColorType.Solid, color: '#222' },

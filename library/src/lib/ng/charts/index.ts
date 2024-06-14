@@ -6,4 +6,4 @@ export {TVBaselineChartComponent} from "./baseline-chart/baseline-chart.componen
 export {TVAreaChartComponent} from "./area-chart/area-chart.component";
 export {TVChartOutputsDirective, tvChartOutputsDirectiveHostDef} from "./charts-outputs.directive";
 export {TVChartInputsDirective, tvChartInputsDirectiveHostDef} from "./chart-inputs.directive";
-export {TVChartDirective} from "./chart.directive";
+export {TVChartDirective, DEFAULT_CHART_OPTIONS, DEFAULT_DARK_CHART_OPTIONS} from "./chart.directive";
