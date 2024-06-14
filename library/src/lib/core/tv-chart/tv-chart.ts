@@ -1,4 +1,4 @@
-import {BehaviorSubject, delay, EMPTY, filter, mergeMap, Observable, share} from "rxjs";
+import {BehaviorSubject, delay, EMPTY, filter, mergeMap, Observable} from "rxjs";
 import {
   ChartOptions,
   DeepPartial,
@@ -8,7 +8,7 @@ import {
   SeriesMarker,
   SeriesPartialOptionsMap,
   SeriesType,
-  Time, ITimeScaleApi, IPriceScaleApi, Range, LogicalRange, MouseEventParams, DataChangedScope
+  Time, ITimeScaleApi, IPriceScaleApi, Range, LogicalRange, MouseEventParams, DataChangedScope, Point
 } from "lightweight-charts";
 import {SeriesFactory, SeriesFactoryReturnType} from "../series";
 import {ChartFactory, ChartSubscriptions} from "../chart";
@@ -16,13 +16,30 @@ import {TimescaleSubscriptions} from "../timescale";
 import {SeriesSubscriptions} from "../series/series.types";
 
 
-export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
 
-  readonly #initialised = new BehaviorSubject<undefined | TVChart<T, HorzScaleItem>>(undefined);
-  readonly initialised$ = this.#initialised.asObservable().pipe(
-    filter(initialised => !!initialised),
-    //delay(1000 + Math.random() * 1000)
-  );
+export function unInitialisedWarning<TThis extends TVChart<any>, Fn extends (...args: any[]) => any>(
+  originalMethod: Fn,
+  context: ClassMethodDecoratorContext<ThisParameterType<Fn>, Fn>
+) {
+  if (context.kind === "method") {
+    return function(this: TThis, ...args: any[]) {
+      if(!this.isInitialised) {
+        console.group('Chart not initialised')
+        console.warn(`Call to ${String(context.name)} ignored`);
+        console.warn('Arguments', args);
+        console.warn('Chart', this);
+        console.groupEnd();
+        return;
+      }
+      return originalMethod.apply(this, args)
+    }
+  }
+  return originalMethod;
+}
+
+
+
+export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
 
   readonly #chartFactory: ChartFactory;
   readonly #seriesFactory: SeriesFactory;
@@ -36,6 +53,42 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   #chartSubscriptions?: ChartSubscriptions<HorzScaleItem>;
   #timescaleSubscriptions?: TimescaleSubscriptions<HorzScaleItem>;
   #seriesSubscriptions?: SeriesSubscriptions;
+
+
+  readonly #initialised = new BehaviorSubject<undefined | TVChart<T, HorzScaleItem>>(undefined);
+  readonly initialised$ = this.#initialised.asObservable().pipe(
+    filter(initialised => !!initialised),
+    //delay(1000 + Math.random() * 1000)
+  );
+
+  readonly click$: Observable<MouseEventParams<HorzScaleItem>> = this.initialised$.pipe(
+    mergeMap(() => this.#chartSubscriptions?.click$ || EMPTY)
+  );
+
+  readonly dblClick$: Observable<MouseEventParams<HorzScaleItem>> = this.initialised$.pipe(
+    mergeMap(() => this.#chartSubscriptions?.dblClick$ || EMPTY)
+  );
+
+  readonly crossHairMove$: Observable<MouseEventParams<HorzScaleItem>> = this.initialised$.pipe(
+    mergeMap(() => this.#chartSubscriptions?.crossHairMove$ || EMPTY)
+  );
+
+  readonly visibleTimeRangeChange$: Observable<Range<HorzScaleItem> | null> = this.initialised$.pipe(
+    mergeMap(() => this.#timescaleSubscriptions?.visibleTimeRangeChange$ || EMPTY)
+  );
+
+  readonly visibleLogicalRangeChange$: Observable<LogicalRange | null> = this.initialised$.pipe(
+    mergeMap(() => this.#timescaleSubscriptions?.visibleLogicalRangeChange$ || EMPTY)
+  );
+
+  readonly sizeChange$: Observable<number> = this.initialised$.pipe(
+    mergeMap(() => this.#timescaleSubscriptions?.sizeChange$ || EMPTY)
+  );
+
+  readonly dataChange$: Observable<DataChangedScope> = this.initialised$.pipe(
+    mergeMap(() => this.#seriesSubscriptions?.dataChange$ || EMPTY)
+  );
+
 
   get id(): string | undefined {
     return this.#id;
@@ -77,48 +130,6 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     return !!this.#initialised.value;
   }
 
-  get click$(): Observable<MouseEventParams<HorzScaleItem>> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#chartSubscriptions?.click$ || EMPTY)
-    );
-  }
-
-  get dblClick$(): Observable<MouseEventParams<HorzScaleItem>> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#chartSubscriptions?.dblClick$ || EMPTY)
-    );
-  }
-
-  get crossHairMove$(): Observable<MouseEventParams<HorzScaleItem>> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#chartSubscriptions?.crossHairMove$ || EMPTY)
-    );
-  }
-
-  get visibleTimeRangeChange$(): Observable<Range<HorzScaleItem> | null> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#timescaleSubscriptions?.visibleTimeRangeChange$ || EMPTY)
-    );
-  }
-
-  get visibleLogicalRangeChange$(): Observable<LogicalRange | null> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#timescaleSubscriptions?.visibleLogicalRangeChange$ || EMPTY)
-    );
-  }
-
-  get sizeChange$(): Observable<number> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#timescaleSubscriptions?.sizeChange$ || EMPTY)
-    );
-  }
-
-  get dataChange$(): Observable<DataChangedScope> {
-    return this.initialised$.pipe(
-      mergeMap(() => this.#seriesSubscriptions?.dataChange$ || EMPTY)
-    );
-  }
-
   constructor(chartFactory: ChartFactory, seriesFactory: SeriesFactory) {
     this.#chartFactory = chartFactory;
     this.#seriesFactory = seriesFactory;
@@ -147,58 +158,76 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     this.#initialised.next(this);
   }
 
+  @unInitialisedWarning
   applyOptions(options?: DeepPartial<ChartOptions>) {
-    if(!this.isInitialised) {
-      this.#uninitialisedWarning();
-      return;
-    }
     this.#chart?.applyOptions(options || {});
   }
 
+  @unInitialisedWarning
   applySeriesOptions(seriesOptions?: SeriesPartialOptionsMap[T]) {
-    if(!this.isInitialised) {
-      this.#uninitialisedWarning();
-      return;
-    }
     this.#series?.applyOptions(seriesOptions || {});
   }
 
+  @unInitialisedWarning
   setData(data: SeriesDataItemTypeMap<HorzScaleItem>[T][]): void {
-    if(!this.isInitialised) {
-      this.#uninitialisedWarning();
-      return;
-    }
     this.#series?.setData(data);
   }
 
+  @unInitialisedWarning
   setMarkers(markers: SeriesMarker<HorzScaleItem>[]): void {
-    if(!this.isInitialised) {
-      this.#uninitialisedWarning();
-      return;
-    }
     this.#series?.setMarkers(markers);
   }
 
+  @unInitialisedWarning
   setVisibleLogicalRange(range: Range<number>): void {
-    if(!this.isInitialised) {
-      this.#uninitialisedWarning();
-      return;
-    }
     this.#chart?.timeScale().setVisibleLogicalRange(range);
   }
 
+  @unInitialisedWarning
+  setVisibleRange(range: Range<HorzScaleItem>): void {
+    this.#chart?.timeScale().setVisibleRange(range);
+  }
+
+  @unInitialisedWarning
+  setCrosshairPosition(price: number, horizontalPosition: HorzScaleItem, seriesApi: ISeriesApi<SeriesType, HorzScaleItem>): void {
+    this.#chart?.setCrosshairPosition(price, horizontalPosition, seriesApi);
+  }
+
+  @unInitialisedWarning
+  setCrossHairPositionByPoint(point: Point): void {
+
+    const xValue = this.#chart?.timeScale().coordinateToTime(point.x),
+      yValue = this.#series?.coordinateToPrice(point.y);
+
+    if(!xValue || !yValue) {
+      return;
+    }
+
+    this.setCrosshairPosition(yValue, xValue, this.#series!);
+  }
+
+  @unInitialisedWarning
+  clearCrosshairPosition(): void {
+    this.#chart?.clearCrosshairPosition();
+  }
+
+  @unInitialisedWarning
   addAdditionalSeries<ST extends SeriesType>(
     type: ST,
     seriesOptions: SeriesPartialOptionsMap[ST]
-  ): SeriesFactoryReturnType<ST, HorzScaleItem>  {
+  ): SeriesFactoryReturnType<ST, HorzScaleItem> {
 
-    if(!this.isInitialised) {
-      this.#uninitialisedWarning();
+    if(!this.#chart) {
+      return {
+        series: undefined,
+        seriesSubscriptions: undefined
+      };
     }
 
-    return this.#seriesFactory.create<ST, HorzScaleItem>(type, this.#chart!, seriesOptions);
+    return this.#seriesFactory.create<ST, HorzScaleItem>(type, this.#chart, seriesOptions);
   }
 
+  @unInitialisedWarning
   removeSeries(series?: ISeriesApi<SeriesType, HorzScaleItem>): void {
     if(!series) {
       series = this.#series;
@@ -211,18 +240,26 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     this.#chart?.removeSeries(series);
   }
 
+  @unInitialisedWarning
   resize(width: number, height: number, forceRepaint?: boolean): void {
     this.#chart?.resize(width, height, forceRepaint);
   }
 
+  @unInitialisedWarning
   remove() {
     this.#chart?.remove();
     this.#chartSubscriptions?.destroy();
     this.#timescaleSubscriptions?.destroy();
     this.#seriesSubscriptions?.destroy();
+    this.#initialised.complete();
   }
 
-  #init(element: HTMLElement, type: T, options: DeepPartial<ChartOptions>, seriesOptions: SeriesPartialOptionsMap[T]) {
+  #init(
+    element: HTMLElement,
+    type: T,
+    options: DeepPartial<ChartOptions>,
+    seriesOptions: SeriesPartialOptionsMap[T]
+  ): void {
     ({
       chart: this.#chart,
       chartSubscriptions: this.#chartSubscriptions,
@@ -233,9 +270,5 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
       series: this.#series,
       seriesSubscriptions: this.#seriesSubscriptions
     } = this.#seriesFactory.create<T, HorzScaleItem>(type, this.#chart, seriesOptions));
-  }
-
-  #uninitialisedWarning() {
-    console.warn('Chart not initialised');
   }
 }
