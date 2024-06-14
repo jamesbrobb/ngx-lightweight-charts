@@ -22,20 +22,8 @@ export class TVChartBorderDirective<T extends SeriesType, HorzItemScale> {
 
   constructor() {
     effect(() => {
-      const charts = this.#collector.charts();
-
-      if(!charts) {
-        return;
-      }
-
-      charts.forEach(chart => {
-        const styles = this.#getStyles(chart);
-
-        if(!styles) {
-          return;
-        }
-
-        chart.applyOptions(styles);
+      this.#collector.charts()?.forEach(chart => {
+        chart.applyOptions(this.#getStyles(chart) || {});
       })
     });
   }
@@ -63,5 +51,4 @@ export class TVChartBorderDirective<T extends SeriesType, HorzItemScale> {
       }
     }
   }
-
 }

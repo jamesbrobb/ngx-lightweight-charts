@@ -20,7 +20,6 @@ export class TVChartGroupDirective<T extends SeriesType, HorzItemScale> {
 
   constructor() {
     effect(() => {
-
       this.#collector.charts()
         ?.filter(filterChartsByIds(this.ids()))
         .forEach((chart, index, charts) => {

@@ -19,7 +19,7 @@ import {
   SeriesType
 } from "lightweight-charts";
 import {TVChart} from "../../core";
-import {tvChartExistenceCheckProvider} from "../providers/tv-chart.provider";
+import {tvChartProviderWithExistenceCheck} from "../providers/tv-chart.provider";
 import {TVChartInputsDirective, tvChartInputsDirectiveHostDef} from "./chart-inputs.directive";
 import {tvChartOutputsDirectiveHostDef} from "./charts-outputs.directive";
 
@@ -84,7 +84,7 @@ export const DEFAULT_DARK_CHART_OPTIONS: DeepPartial<ChartOptions> = deepmerge(
 @Directive({
   selector: '[tvChart]',
   standalone: true,
-  providers: [tvChartExistenceCheckProvider],
+  providers: [tvChartProviderWithExistenceCheck],
   hostDirectives: [
     tvChartInputsDirectiveHostDef,
     tvChartOutputsDirectiveHostDef

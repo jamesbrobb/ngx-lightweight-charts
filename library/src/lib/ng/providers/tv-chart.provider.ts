@@ -9,7 +9,7 @@ export const tvChartProvider: Provider = {
 }
 
 
-export const tvChartExistenceCheckProvider: Provider = {
+export const tvChartProviderWithExistenceCheck: Provider = {
   provide: TVChart,
   useFactory: () => {
     const parentChart = inject(TVChart, {optional: true, skipSelf: true});
