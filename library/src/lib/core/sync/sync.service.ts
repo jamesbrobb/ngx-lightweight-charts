@@ -8,7 +8,7 @@ export type Syncable = {
 }
 
 export type SyncableWithCrosshair<HorzScaleItem> = Syncable & {
-  setCrossHairPositionByPoint(point: Point): void
+  setCrossHairPositionByPoint(point: Point, time?: HorzScaleItem): void
   clearCrosshairPosition(): void
   readonly crossHairMove$: Observable<MouseEventParams<HorzScaleItem>>
 }
@@ -62,7 +62,11 @@ export class SyncService<HorzScaleItem> {
             return;
           }
 
-          syncable.setCrossHairPositionByPoint(data.point);
+          if(!data.sourceEvent) {
+            return;
+          }
+
+          syncable.setCrossHairPositionByPoint(data.point, data.time);
         });
     }),
     map(arg => arg?.data),

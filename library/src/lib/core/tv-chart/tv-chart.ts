@@ -194,9 +194,9 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   }
 
   @unInitialisedWarning
-  setCrossHairPositionByPoint(point: Point): void {
+  setCrossHairPositionByPoint(point: Point, time?: HorzScaleItem): void {
 
-    const xValue = this.#chart?.timeScale().coordinateToTime(point.x),
+    const xValue = time || this.#chart?.timeScale().coordinateToTime(point.x),
       yValue = this.#series?.coordinateToPrice(point.y);
 
     if(!xValue || !yValue) {
