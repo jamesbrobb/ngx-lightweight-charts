@@ -1,8 +1,8 @@
 import {bufferCount, from, map, mergeMap, share, switchMap} from "rxjs";
-import {contentChildren, Directive, inject} from '@angular/core';
+import {computed, contentChildren, Directive, inject, input} from '@angular/core';
 import {takeUntilDestroyed, toObservable, toSignal} from "@angular/core/rxjs-interop";
 import {SeriesType} from "lightweight-charts";
-import {TVChart} from "../../core";
+import {filterChartsByIds, TVChart} from "../../core";
 
 
 @Directive({
@@ -13,9 +13,11 @@ export class TVChartCollectorDirective<T extends SeriesType, HorzScaleItem> {
 
   readonly #chart = inject(TVChart<T, HorzScaleItem>, {optional: true});
 
-  readonly childCharts = contentChildren<TVChart<T, HorzScaleItem>>(TVChart);
+  ids = input<string | string[]>('', {alias: 'tvChartCollector'});
 
-  readonly charts = toSignal(
+  readonly childCharts = contentChildren<TVChart<T, HorzScaleItem>>(TVChart, {descendants: true});
+
+  readonly #charts = toSignal(
     toObservable(this.childCharts).pipe(
       takeUntilDestroyed(),
       map(charts => [...(this.#chart ? [this.#chart] : []), ...charts]),
@@ -27,4 +29,8 @@ export class TVChartCollectorDirective<T extends SeriesType, HorzScaleItem> {
       share()
     )
   );
+
+  readonly charts = computed(() => {
+    return this.#charts()?.filter(filterChartsByIds(this.ids()));
+  })
 }

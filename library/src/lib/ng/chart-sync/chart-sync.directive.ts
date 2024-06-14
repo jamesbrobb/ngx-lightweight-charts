@@ -1,6 +1,7 @@
-import {Directive, effect, inject} from '@angular/core';
-import {SyncService} from "../../core";
+import {Directive, effect, inject, input} from '@angular/core';
+import {filterChartsByIds, SyncService} from "../../core";
 import {TVChartCollectorDirective} from "../chart-collector/chart-collector.directive";
+import {outputFromObservable} from "@angular/core/rxjs-interop";
 
 
 @Directive({
@@ -18,21 +19,20 @@ export class TVChartSyncDirective {
   readonly #collector = inject(TVChartCollectorDirective);
   readonly #syncService = inject(SyncService);
 
+  ids = input<string | string[]>('', {alias: 'tvChartSync'});
+
+  visibleLogicalRange = outputFromObservable(this.#syncService.visibleLogicalRange$);
+  crosshairPosition = outputFromObservable(this.#syncService.crosshairPosition$);
+
   constructor() {
     effect(() => {
-      const charts = this.#collector.charts();
-
-      if (!charts) {
-        return;
-      }
-
-      /*
-        need to manage register/deregister at this level
-       */
-      charts.forEach(chart => {
-        this.#syncService.register(chart);
-      });
+      this.#syncService.register(
+        (this.#collector.charts() || []).filter(filterChartsByIds(this.ids()))
+      );
     });
   }
 
+  ngOnDestroy() {
+    this.#syncService.destroy();
+  }
 }
