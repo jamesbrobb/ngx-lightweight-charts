@@ -9,17 +9,10 @@ export class ChartStreams<HorzScaleItem = Time> implements ChartSubscriptions<Ho
   readonly #click: SubscriptionStreamHandler<MouseEventParams<HorzScaleItem>>;
   readonly #dblClick: SubscriptionStreamHandler<MouseEventParams<HorzScaleItem>>;
 
-  get crossHairMove$(): Observable<MouseEventParams<HorzScaleItem>> {
-    return this.#crossHairMove.stream$;
-  }
+  readonly crossHairMove$: Observable<MouseEventParams<HorzScaleItem>>;
+  readonly click$: Observable<MouseEventParams<HorzScaleItem>>;
+  readonly dblClick$: Observable<MouseEventParams<HorzScaleItem>>;
 
-  get click$(): Observable<MouseEventParams<HorzScaleItem>> {
-    return this.#click.stream$;
-  }
-
-  get dblClick$(): Observable<MouseEventParams<HorzScaleItem>> {
-    return this.#dblClick.stream$;
-  }
 
   constructor(chart: IChartApiBase<HorzScaleItem>) {
     this.#crossHairMove = new SubscriptionStreamHandler(
@@ -34,6 +27,10 @@ export class ChartStreams<HorzScaleItem = Time> implements ChartSubscriptions<Ho
       chart.subscribeDblClick.bind(chart),
       chart.unsubscribeClick.bind(chart)
     );
+
+    this.crossHairMove$ = this.#crossHairMove.stream$;
+    this.click$ = this.#click.stream$;
+    this.dblClick$ = this.#dblClick.stream$;
   }
 
   destroy(): void {
