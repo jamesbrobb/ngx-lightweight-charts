@@ -48,22 +48,22 @@ Either use the `tvChart` directive, specifying the type of chart to be displayed
 Or use one of the following convenience components that wrap `tvChart` to create a specific chart type.
 
 ```html
-<tv-area-chart [points]="pointData"></tv-area-chart>
+<tv-area-chart [data]="pointData"></tv-area-chart>
 ```
 ```html
-<tv-bar-chart [bars]="barData"></tv-bar-chart>
+<tv-bar-chart [data]="barData"></tv-bar-chart>
 ```
 ```html
-<tv-baseline-chart [points]="pointData"></tv-baseline-chart>
+<tv-baseline-chart [data]="pointData"></tv-baseline-chart>
 ```
 ```html
-<tv-candlestick-chart [klines]="klineData"></tv-candlestick-chart>
+<tv-candlestick-chart [data]="klineData"></tv-candlestick-chart>
 ```
 ```html
 <tv-histogram-chart [data]="pointData"></tv-histogram-chart>
 ```
 ```html
-<tv-line-chart [points]="pointData"></tv-line-chart>
+<tv-line-chart [data]="pointData"></tv-line-chart>
 ```
 
 # 3.
@@ -72,7 +72,7 @@ Or use one of the following convenience components that wrap `tvChart` to create
 
 All charts expose the following signal based inputs and outputs:
 
-(Generic `T extends [SeriesType](https://tradingview.github.io/lightweight-charts/docs/api#seriestype)` and `HorzItemScale` defaults to `Time`)
+(Generic type `T` extends [SeriesType][9] and `HorzItemScale` defaults to `Time`)
 
 | Input                      | type                                            |
 |:---------------------------|:------------------------------------------------|
@@ -102,3 +102,4 @@ All charts expose the following signal based inputs and outputs:
 [6]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/Range
 [7]: https://tradingview.github.io/lightweight-charts/docs/api#logicalrange
 [8]: https://tradingview.github.io/lightweight-charts/docs/api#datachangedscope
+[9]: https://tradingview.github.io/lightweight-charts/docs/api#seriestype
