@@ -2,16 +2,12 @@ import {EnvironmentProviders, makeEnvironmentProviders} from "@angular/core";
 import {ChartFactory, SeriesFactory} from "../core";
 
 
-export function getTVChartProviders(): EnvironmentProviders {
+export function getTVChartDefaultProviders(): EnvironmentProviders {
   return makeEnvironmentProviders([{
     provide: ChartFactory,
-    useFactory: () => {
-      return new ChartFactory();
-    }
+    useFactory: () => new ChartFactory()
   }, {
     provide: SeriesFactory,
-    useFactory: () => {
-      return new SeriesFactory();
-    }
+    useFactory: () => new SeriesFactory()
   }]);
 }

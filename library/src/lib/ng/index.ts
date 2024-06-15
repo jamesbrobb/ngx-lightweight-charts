@@ -1,4 +1,4 @@
-export {getTVChartProviders} from "./providers";
+export {getTVChartDefaultProviders} from "./providers";
 
 export {TVChartCollectorDirective} from "./chart-collector/chart-collector.directive";
 export {TVChartSyncDirective} from "./chart-sync/chart-sync.directive";
