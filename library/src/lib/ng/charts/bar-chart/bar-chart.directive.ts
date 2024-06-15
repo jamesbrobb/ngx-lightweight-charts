@@ -28,7 +28,7 @@ const DEFAULT_BAR_SERIES_OPTIONS: BarSeriesPartialOptions = {
 })
 export class TVBarChartDirective {
   seriesOptions = input<BarSeriesPartialOptions>(DEFAULT_BAR_SERIES_OPTIONS);
-  bars = input<BarData<Time>[]>();
+  data = input<BarData<Time>[]>();
 
   readonly inputs = inject(TVChartInputsDirective);
 }

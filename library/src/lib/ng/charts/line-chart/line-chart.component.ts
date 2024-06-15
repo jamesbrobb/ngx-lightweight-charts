@@ -21,7 +21,7 @@ import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 })
 export class TVLineChartDirective {
   seriesOptions = input<LineSeriesPartialOptions>({});
-  points = input<LineData<Time>[]>();
+  data = input<LineData<Time>[]>();
 
   readonly inputs = inject(TVChartInputsDirective);
 }

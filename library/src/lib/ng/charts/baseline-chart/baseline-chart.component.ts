@@ -21,7 +21,7 @@ import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 })
 export class TVBaselineChartComponent {
   seriesOptions = input<BaselineSeriesPartialOptions>({});
-  points = input<BaselineData<Time>[]>();
+  data = input<BaselineData<Time>[]>();
 
   readonly inputs = inject(TVChartInputsDirective);
 }

@@ -49,7 +49,7 @@ export class TVCandleStickChartComponent<HorzScaleItem> {
   seriesOptions = input<CandlestickSeriesPartialOptions>({});
   volumeOptions = input<HistogramSeriesPartialOptions>(DEFAULT_HISTOGRAM_SERIES_OPTIONS);
 
-  klines = input<CandlestickData<HorzScaleItem>[]>();
+  data = input<CandlestickData<HorzScaleItem>[]>();
   volume = input<HistogramData<HorzScaleItem>[]>();
 
   chart = viewChild<TVChartDirective<'Candlestick', HorzScaleItem>, TVChart<'Candlestick', HorzScaleItem>>(
