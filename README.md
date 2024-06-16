@@ -152,11 +152,11 @@ export class MyComponent {
 }
 ```
 
-2). Through the `tvChartCollector` directive when creating reusable functionality, which can be used to access and interact with a single TVChart or a collection.
+2). Through the `tvChartCollector` directive when creating reusable functionality, which can be used to access and interact with a single `TVChart` or a collection.
 
 The `tvChartCollector` also ensures that all `TVChart` instances have been fully initialised before exposing them for access through the `charts` signal. 
 
-Accessing a single TVChart instance:
+Accessing a single `TVChart` instance:
 
 ```html
 <div tvChart="Line" [data]="chartData" tvChartCollector myDirective></div>
