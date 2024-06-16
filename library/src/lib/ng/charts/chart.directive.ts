@@ -93,7 +93,7 @@ export const DEFAULT_DARK_CHART_OPTIONS: DeepPartial<ChartOptions> = deepmerge(
 export class TVChartDirective<T extends SeriesType, HorzScaleItem> implements OnInit, OnDestroy {
 
   type = input.required<T>({alias: 'tvChart'});
-  seriesOptions = input.required<SeriesPartialOptionsMap[T]>();
+  seriesOptions = input<SeriesPartialOptionsMap[T]>();
   data = input<SeriesDataItemTypeMap<HorzScaleItem>[T][]>();
 
   readonly #inputs = inject(TVChartInputsDirective);
