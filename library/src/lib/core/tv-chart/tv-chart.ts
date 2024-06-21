@@ -56,7 +56,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
 
 
   readonly #initialised = new BehaviorSubject<undefined | TVChart<T, HorzScaleItem>>(undefined);
-  readonly initialised$ = this.#initialised.asObservable().pipe(
+  readonly initialised$: Observable<TVChart<T, HorzScaleItem> | undefined> = this.#initialised.asObservable().pipe(
     filter(initialised => !!initialised),
     //delay(1000 + Math.random() * 1000)
   );

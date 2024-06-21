@@ -3,5 +3,10 @@
   "dest": "../dist/ngx-lightweight-charts",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": [{
+    "input": "/assets",
+    "glob": "**/*.*",
+    "output": "/assets"
+  }]
 }
