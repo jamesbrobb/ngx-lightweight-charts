@@ -25,6 +25,11 @@ A (re)implementation of the entire `lightweight-charts` [api][11].
 
 ### Getting started
 
+| Version | Angular version |
+|:--------|---------------|
+| `0.3.0` | 18 |
+| `0.2.3` | 17 |
+
 Installation
 
 ```bash

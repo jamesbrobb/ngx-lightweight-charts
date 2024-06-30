@@ -25,6 +25,11 @@ A (re)implementation of the entire `lightweight-charts` [api][11].
 
 ### Getting started
 
+| Version | Angular version |
+|:--------|---------------|
+| `0.3.0` | 18 |
+| `0.2.3` | 17 |
+
 Installation
 
 ```bash
@@ -85,7 +90,7 @@ Or use one of the following convenience components that wrap `tvChart` to create
 
 All charts expose the following signal based inputs and outputs:
 
-(Generic type `T` extends [SeriesType][9] and `HorzItemScale` defaults to `Time`)
+(Generic type `T` extends [SeriesType][9] and `HorzItemScale` defaults to [Time][15])
 
 | Input                      | type                                            |
 |:---------------------------|:------------------------------------------------|
@@ -328,3 +333,4 @@ export class YourDirective {
 [12]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ISeriesApi
 [13]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ITimeScaleApi
 [14]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/IPriceScaleApi
+[15]: https://tradingview.github.io/lightweight-charts/docs/api#time
