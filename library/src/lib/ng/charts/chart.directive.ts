@@ -79,17 +79,12 @@ export const DEFAULT_DARK_CHART_OPTIONS: DeepPartial<ChartOptions> = deepmerge(
 
 
 
-
-
 @Directive({
   selector: '[tvChart]',
   standalone: true,
   providers: [tvChartProviderWithExistenceCheck],
   hostDirectives: [
-    {
-      directive: TVChartInputsDirective,
-      inputs: ['id', 'options', 'markers']
-    },
+    tvChartInputsDirectiveHostDef,
     tvChartOutputsDirectiveHostDef
   ]
 })
