@@ -34,6 +34,8 @@ import {
   Observable,
   bufferCount
 } from 'rxjs';
+import {HLCAreaSeries} from "./hlc-area-series/hlc-area-series";
+import {generateAlternativeCandleData} from "./data/sample-data";
 
 
 @Component({
@@ -67,6 +69,9 @@ export class AppComponent {
 
   groupCollection = signal(['one', 'four']);
   groupCollectionToggle = false;
+
+  customSeriesView: any = new HLCAreaSeries();
+  customData = generateAlternativeCandleData(100);
 
   constructor() {
     this.#data.data$.subscribe(data => {
