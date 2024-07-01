@@ -17,6 +17,7 @@ import {
   TVChartSyncDirective,
   TVCandleStickChartComponent,
   TVChartCollectorDirective,
+  TVChartCustomSeriesComponent,
   DEFAULT_DARK_CHART_OPTIONS
 } from "ngx-lightweight-charts";
 
@@ -36,6 +37,7 @@ import {
 } from 'rxjs';
 import {HLCAreaSeries} from "./hlc-area-series/hlc-area-series";
 import {generateAlternativeCandleData} from "./data/sample-data";
+import {CustomSeriesExampleDirective} from "./components/custom-series-example.directive";
 
 
 @Component({
@@ -47,7 +49,9 @@ import {generateAlternativeCandleData} from "./data/sample-data";
     TVChartBorderDirective,
     TVChartSyncDirective,
     TVCandleStickChartComponent,
-    TVChartCollectorDirective
+    TVChartCollectorDirective,
+    TVChartCustomSeriesComponent,
+    CustomSeriesExampleDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -70,7 +74,7 @@ export class AppComponent {
   groupCollection = signal(['one', 'four']);
   groupCollectionToggle = false;
 
-  customSeriesView: any = new HLCAreaSeries();
+  customSeriesView = new HLCAreaSeries();
   customData = generateAlternativeCandleData(100);
 
   constructor() {

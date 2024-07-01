@@ -5,8 +5,9 @@
 
 <hr/>
 
-<div tvChart="Candlestick" [data]="customData"></div>
-<div [tvChartSync]="['one', 'two', 'four']" [tvChartCollector]="groupCollection()">
+<div tvChart="Candlestick" [data]="customData" tvChartCollector [customSeriesExample]="customSeriesView"></div>
+<tv-custom-series-chart [data]="customData" [customSeriesView]="customSeriesView"></tv-custom-series-chart>
+<!--<div [tvChartSync]="['one', 'two', 'four']" [tvChartCollector]="groupCollection()">
   @if(showCharts) {
   <div [tvChartGroup]="groupCharts()" [groupOptions]="groupOptions" tvChartCollector [tvChartBorder]="{borderColor:'#ff0000'}">
     <tv-candlestick-chart id="one" [data]="klines" [options]="{height:200}"></tv-candlestick-chart>
@@ -17,8 +18,8 @@
   }
   <div tvChartCollector tvChartSync>
     <tv-candlestick-chart id="one" [data]="klines" [options]="{height:400, rightPriceScale: {minimumWidth: 80}}"></tv-candlestick-chart>
-    <!--<div tvChart="Area" id="two" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>-->
+    <div tvChart="Area" id="two" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>
     <div tvChart="Histogram" id="three"  [data]="rsiValues" [options]="{height:200, rightPriceScale: {minimumWidth: 80}}"></div>
-    <!--<div tvChart="Line" id="four" [data]="rsiValues" [options]="{height:200}"></div>-->
+    <div tvChart="Line" id="four" [data]="rsiValues" [options]="{height:200}"></div>
   </div>
-</div>
+</div>-->
