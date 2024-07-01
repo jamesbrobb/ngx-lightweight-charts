@@ -368,7 +368,7 @@ export class CustomSeriesExampleDirective<HorzScaleItem = Time> {
 
   readonly #collector = inject(TVChartCollectorDirective);
 
-  data = input.required<CustomData<HorzScaleItem>[]>();
+  data = input<CustomData<HorzScaleItem>[]>();
   customSeriesView = input.required<ICustomSeriesPaneView<HorzScaleItem>>({alias: 'customSeriesExample'});
   seriesOptions = input<CustomSeriesOptions>({} as CustomSeriesOptions);
 
