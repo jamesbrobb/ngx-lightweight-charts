@@ -32,5 +32,5 @@ export class TVChartCollectorDirective<T extends SeriesType, HorzScaleItem> {
 
   readonly charts = computed(() => {
     return this.#charts()?.filter(filterChartsByIds(this.ids()));
-  })
+  });
 }
