@@ -57,7 +57,7 @@ export class SyncService<HorzScaleItem> {
         .forEach(syncable => {
           const data = arg.data;
 
-          if (!data.logical || !data.point || !data.time) {
+          if (!data.point || !data.time) {
             syncable.clearCrosshairPosition();
             return;
           }

@@ -8,7 +8,7 @@ A wrapper that exposes core chart functionality within an Angular app, and allow
 
 ### What it's not.
 
-A (re)implementation of the entire `lightweight-charts` [api][11]. 
+A (re)implementation of the entire `lightweight-charts` [api][11].
 
 ### How to use.
 
@@ -19,11 +19,17 @@ A (re)implementation of the entire `lightweight-charts` [api][11].
 4) [TVChart - accessing the underlying IChartAPI and ISeriesApi instance](#4)
 5) [Implemented behaviour](#5)
 6) [Adding behaviour](#6)
+7) [Displaying custom data](#7)
 ---
 
 # 1.
 
 ### Getting started
+
+| Version | Angular version |
+|:--------|---------------|
+| `0.3.x` | 18 |
+| `0.2.x` | 17 |
 
 Installation
 
@@ -85,7 +91,7 @@ Or use one of the following convenience components that wrap `tvChart` to create
 
 All charts expose the following signal based inputs and outputs:
 
-(Generic type `T` extends [SeriesType][9] and `HorzItemScale` defaults to `Time`)
+(Generic type `T` extends [SeriesType][9] and `HorzItemScale` defaults to [Time][15])
 
 | Input                      | type                                            |
 |:---------------------------|:------------------------------------------------|
@@ -154,7 +160,7 @@ export class MyComponent {
 
 2). Through the `tvChartCollector` directive when creating reusable functionality, which can be used to access and interact with a single `TVChart` or a collection.
 
-The `tvChartCollector` also ensures that all `TVChart` instances have been fully initialised before exposing them for access through the `charts` signal. 
+The `tvChartCollector` also ensures that all `TVChart` instances have been fully initialised before exposing them for access through the `charts` signal.
 
 Accessing a single `TVChart` instance:
 
@@ -164,8 +170,7 @@ Accessing a single `TVChart` instance:
 
 ```ts
 import {Directive, effect, inject} from "@angular/core";
-import {TVChartCollectorDirective} from "./chart-collector.directive";
-import {TVChart} from "./tv-chart";
+import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
 
 @Directive({
   selector: '[myDirective]',
@@ -176,7 +181,7 @@ export class MyDirective {
 
   constructor() {
     effect(() => {
-      this.#collector.charts().forEach((chart: TVChart<any>) => {
+      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
         //... perform some action through the TVChart API
       });
     });
@@ -187,7 +192,7 @@ export class MyDirective {
 Accessing multiple TVChart instances:
 
 ```html
-<div tvChartCollector myDirective>
+<div tvChartCollector myMultiChartDirective>
   <tv-candlestick-chart [data]="klineData"></tv-candlestick-chart>
   <tv-histogram-chart [data]="pointData"></tv-histogram-chart>
   <tv-line-chart [data]="pointData"></tv-line-chart>
@@ -196,19 +201,18 @@ Accessing multiple TVChart instances:
 
 ```ts
 import {Directive, effect, inject} from "@angular/core";
-import {TVChartCollectorDirective} from "./chart-collector.directive";
-import {TVChart} from "./tv-chart";
+import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
 
 @Directive({
-  selector: '[myDirective]',
+  selector: '[myMultiChartDirective]',
   standalone: true
 })
-export class MyDirective {
+export class MyMultiChartDirective {
   readonly #collector = inject(TVChartCollectorDirective);
 
   constructor() {
     effect(() => {
-      this.#collector.charts().forEach((chart: TVChart<any>) => {
+      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
         //... perform some action through the TVChart API
       });
     });
@@ -216,7 +220,7 @@ export class MyDirective {
 }
 ```
 
-You may have noticed that the implementation of `MyDirective` is the same for both the single and multiple instance examples. This is intentional.
+You may have noticed that the implementation of `MyDirective` and `MyMultiChartDirective` are identical. This is intentional.
 The `TVChartCollectorDirective.charts` signal always returns an array of charts (whether collecting a single or multiple)
 allowing the flexibility to easily implement directives or components that work with single and/or multiple charts.
 
@@ -232,8 +236,7 @@ The `tvChartCollector` also accepts an array of id's to facilitate the filtering
 
 ```ts
 import {Directive, effect, inject} from "@angular/core";
-import {TVChartCollectorDirective} from "./chart-collector.directive";
-import {TVChart} from "./tv-chart";
+import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
 
 @Directive({
   selector: '[myDirective]',
@@ -244,7 +247,7 @@ export class MyDirective {
 
   constructor() {
     effect(() => {
-      this.#collector.charts().forEach((chart: TVChart<any>) => {
+      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
         //... perform something only on chart "one" and "two"
       });
     });
@@ -294,8 +297,7 @@ To add your own behaviour it's as simple as doing the following:
 
 ```ts
 import {Directive, effect, inject} from "@angular/core";
-import {TVChartCollectorDirective} from "./chart-collector.directive";
-import {TVChart} from "./tv-chart";
+import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
 
 @Directive({
   selector: '[yourDirective]',
@@ -306,13 +308,97 @@ export class YourDirective {
 
   constructor() {
     effect(() => {
-      this.#collector.charts().forEach((chart: TVChart<any>) => {
+      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
         //... perform some action through the TVChart API
       });
     });
   }
 }
 ```
+
+# 7.
+
+### Displaying custom data
+
+The following example uses the [Custom chart HLC area][16] implementation - source code can be found [here][17]
+
+Given the following app component:
+
+```ts
+import {Component} from "@angular/core";
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  customSeriesView = new HLCAreaSeries();
+  customData = generateAlternativeCandleData(100);
+}
+```
+
+There are 2 ways to display custom data:
+
+1). Using the `TVChartCustomSeriesComponent`
+
+```html
+<tv-custom-series-chart [data]="customData" [customSeriesView]="customSeriesView"></tv-custom-series-chart>
+```
+
+![Custom series!](/assets/custom-series.png "Displaying a custom series")
+
+2). By adding an additional (custom) series to an existing chart
+
+```html
+<div tvChart="Candlestick" [data]="customData" tvChartCollector [customSeriesExample]="customSeriesView"></div>
+```
+
+```ts
+import {Directive, effect, inject, input} from "@angular/core";
+import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
+import {CustomData, CustomSeriesOptions, ICustomSeriesPaneView, ISeriesApi, Time} from "lightweight-charts";
+
+
+@Directive({
+  selector: '[customSeriesExample]',
+  standalone: true
+})
+export class CustomSeriesExampleDirective<HorzScaleItem = Time> {
+
+  readonly #collector = inject(TVChartCollectorDirective);
+
+  data = input.required<CustomData<HorzScaleItem>[]>();
+  customSeriesView = input.required<ICustomSeriesPaneView<HorzScaleItem>>({alias: 'customSeriesExample'});
+  seriesOptions = input<CustomSeriesOptions>({} as CustomSeriesOptions);
+
+  #series?: ISeriesApi<'Custom', HorzScaleItem>;
+
+  constructor() {
+
+    effect(() => {
+      this.#collector.charts()?.forEach((chart: TVChart<'Candlestick', HorzScaleItem>) => {
+        const data = this.data(),
+          customSeriesView= this.customSeriesView();
+
+        if(!data || !customSeriesView) {
+          return;
+        }
+
+        ({
+          series: this.#series
+        } = chart.addAdditionalSeries('Custom', this.seriesOptions(), customSeriesView));
+
+        this.#series?.setData(data);
+      });
+    });
+  }
+}
+```
+
+![Additional custom series!](/assets/additional-custom-series.png "Displaying an additional series")
+
+
 
 [1]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/TimeChartOptions
 [2]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/SeriesPartialOptionsMap
@@ -328,3 +414,6 @@ export class YourDirective {
 [12]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ISeriesApi
 [13]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ITimeScaleApi
 [14]: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/IPriceScaleApi
+[15]: https://tradingview.github.io/lightweight-charts/docs/api#time
+[16]: https://www.tradingview.com/lightweight-charts/
+[17]: https://github.com/tradingview/lightweight-charts/tree/master/plugin-examples/src/plugins/hlc-area-series

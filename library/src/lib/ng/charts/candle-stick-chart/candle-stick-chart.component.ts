@@ -90,7 +90,7 @@ export class TVCandleStickChartComponent<HorzScaleItem> {
       return;
     }
 
-    ({series: this.#histogramSeries} = chart.addAdditionalSeries<'Histogram'>('Histogram', this.volumeOptions()));
+    ({series: this.#histogramSeries} = chart.addAdditionalSeries('Histogram', this.volumeOptions()));
 
     if(!this.#histogramSeries) {
       return;
