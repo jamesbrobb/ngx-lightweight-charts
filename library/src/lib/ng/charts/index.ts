@@ -1,4 +1,4 @@
-export {TVCustomChartComponent} from "./custom-chart/custom-chart.component";
+export {TVChartCustomSeriesComponent} from "./custom-chart/custom-chart.component";
 export {TVCandleStickChartComponent} from "./candle-stick-chart/candle-stick-chart.component";
 export {TVHistogramChartComponent} from "./histogram-chart/histogram-chart.component";
 export {TVLineChartDirective} from "./line-chart/line-chart.component";

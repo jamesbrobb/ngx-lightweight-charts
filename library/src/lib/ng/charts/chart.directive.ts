@@ -93,7 +93,7 @@ export class TVChartDirective<T extends SeriesType, HorzScaleItem> implements On
   type = input.required<T>({alias: 'tvChart'});
   seriesOptions = input<SeriesPartialOptionsMap[T]>();
   data = input<SeriesDataItemTypeMap<HorzScaleItem>[T][]>();
-  customSeriesView = input<ICustomSeriesPaneView<HorzScaleItem>[]>();
+  customSeriesView = input<ICustomSeriesPaneView<HorzScaleItem>>();
 
   readonly #inputs = inject(TVChartInputsDirective);
   readonly #element = inject(ElementRef<HTMLElement>).nativeElement;
@@ -142,7 +142,7 @@ export class TVChartDirective<T extends SeriesType, HorzScaleItem> implements On
       this.#inputs.id(),
       options,
       this.seriesOptions() || {},
-      ...(this.customSeriesView() ? [this.customSeriesView()] : []) as any
+      ...(this.customSeriesView() ? [this.customSeriesView()] : [] as any)
     );
   }
 

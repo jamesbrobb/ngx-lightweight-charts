@@ -1,9 +1,9 @@
 import {
   CustomData,
   CustomSeriesOptions,
-  IChartApiBase, ICustomSeriesPaneView,
+  IChartApiBase,
+  ICustomSeriesPaneView,
   ISeriesApi,
-  SeriesOptionsMap,
   SeriesPartialOptionsMap,
   SeriesType,
 } from "lightweight-charts";
@@ -18,8 +18,8 @@ export type SeriesFactoryReturnType<T extends SeriesType, HorzScaleItem> = {
   seriesSubscriptions?: SeriesSubscriptions
 }
 
-export type RequiresCustomData<T extends SeriesType, HorzScaleItem> = T extends SeriesOptionsMap['Custom'] ? CustomData<HorzScaleItem> : never
-export type RequiresCustomSeriesView<T extends SeriesType, HorzScaleItem> = T extends SeriesOptionsMap['Custom'] ? [ICustomSeriesPaneView<HorzScaleItem>] : []
+export type RequiresCustomData<T extends SeriesType, HorzScaleItem> = T extends 'Custom' ? CustomData<HorzScaleItem> : never
+export type RequiresCustomSeriesView<T extends SeriesType, HorzScaleItem> = T extends 'Custom' ? [customSeriesView: ICustomSeriesPaneView<HorzScaleItem>] : []
 
 
 function isCustomSeriesOptions(type: SeriesType, options: any): options is CustomSeriesOptions {
@@ -65,6 +65,7 @@ export class SeriesFactory {
       if(!isCustomSeriesView(customSeriesView)) {
         throw new Error('Custom series requires a custom view');
       }
+
       // TODO - fix narrowing issue to remove as
       return chart.addCustomSeries(customSeriesView[0], seriesOptions) as ISeriesApi<T, HorzScaleItem>;
 

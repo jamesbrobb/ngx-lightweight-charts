@@ -222,7 +222,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   @unInitialisedWarning
   addAdditionalSeries<ST extends SeriesType>(
     type: ST,
-    seriesOptions: SeriesPartialOptionsMap[T],
+    seriesOptions: SeriesPartialOptionsMap[ST],
     ...customSeriesView: RequiresCustomSeriesView<ST, HorzScaleItem>
   ): SeriesFactoryReturnType<ST, HorzScaleItem> {
 

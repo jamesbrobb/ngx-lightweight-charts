@@ -7,7 +7,7 @@ import {CustomData, CustomSeriesPartialOptions, ICustomSeriesPaneView, Time} fro
 
 
 @Component({
-  selector: 'tv-custom-chart',
+  selector: 'tv-custom-series-chart',
   standalone: true,
   imports: [TVChartDirective],
   providers: [tvChartProvider],
@@ -19,10 +19,10 @@ import {CustomData, CustomSeriesPartialOptions, ICustomSeriesPaneView, Time} fro
   styleUrl: './custom-chart.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TVCustomChartComponent<HorzScaleItem = Time> {
+export class TVChartCustomSeriesComponent<HorzScaleItem = Time> {
   seriesOptions = input<CustomSeriesPartialOptions>({});
   data = input<CustomData<HorzScaleItem>[]>();
-  customSeriesView = input<ICustomSeriesPaneView<HorzScaleItem>[]>();
+  customSeriesView = input<ICustomSeriesPaneView<HorzScaleItem>>();
 
   readonly inputs = inject(TVChartInputsDirective);
 }
