@@ -28,8 +28,8 @@ A (re)implementation of the entire `lightweight-charts` [api][11].
 
 | Version | Angular version |
 |:--------|---------------|
-| `0.3.0` | 18 |
-| `0.2.3` | 17 |
+| `0.3.x` | 18 |
+| `0.2.x` | 17 |
 
 Installation
 
