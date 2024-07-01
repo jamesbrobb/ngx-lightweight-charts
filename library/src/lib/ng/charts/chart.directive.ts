@@ -12,7 +12,7 @@ import {
 import {
   ChartOptions,
   ColorType,
-  DeepPartial,
+  DeepPartial, ICustomSeriesPaneView,
   LineStyle,
   SeriesDataItemTypeMap,
   SeriesPartialOptionsMap,
@@ -93,6 +93,7 @@ export class TVChartDirective<T extends SeriesType, HorzScaleItem> implements On
   type = input.required<T>({alias: 'tvChart'});
   seriesOptions = input<SeriesPartialOptionsMap[T]>();
   data = input<SeriesDataItemTypeMap<HorzScaleItem>[T][]>();
+  customSeriesView = input<ICustomSeriesPaneView<HorzScaleItem>>();
 
   readonly #inputs = inject(TVChartInputsDirective);
   readonly #element = inject(ElementRef<HTMLElement>).nativeElement;
@@ -101,25 +102,48 @@ export class TVChartDirective<T extends SeriesType, HorzScaleItem> implements On
   constructor() {
 
     effect(() => {
-      this.#chart.applyOptions(this.#inputs.options());
+      const options = this.#inputs.options();
+      if(!options) {
+        return;
+      }
+      this.#chart.applyOptions(options);
     });
 
     effect(() => {
-      this.#chart.applySeriesOptions(this.seriesOptions());
+      const seriesOptions = this.seriesOptions();
+      if(!seriesOptions) {
+        return;
+      }
+      this.#chart.applySeriesOptions(seriesOptions);
     });
 
     effect(() => {
-      this.#chart.setData(this.data() || []);
+      const data = this.data();
+      if(!data) {
+        return;
+      }
+      this.#chart.setData(data);
     });
 
     effect(() => {
-      this.#chart.setMarkers(this.#inputs.markers() || []);
+      const markers = this.#inputs.markers();
+      if(!markers) {
+        return;
+      }
+      this.#chart.setMarkers(markers);
     });
   }
 
   ngOnInit() {
     const options = deepmerge(DEFAULT_CHART_OPTIONS, this.#inputs.options() || {});
-    this.#chart.initialise(this.#element, this.type(), options, this.seriesOptions() || {}, this.#inputs.id());
+    this.#chart.initialise(
+      this.#element,
+      this.type(),
+      this.#inputs.id(),
+      options,
+      this.seriesOptions() || {},
+      ...(this.customSeriesView() ? [this.customSeriesView()] : [] as any)
+    );
   }
 
   ngOnDestroy() {

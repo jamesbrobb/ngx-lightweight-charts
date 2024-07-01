@@ -1,4 +1,4 @@
-import {BehaviorSubject, delay, EMPTY, filter, mergeMap, Observable} from "rxjs";
+import {BehaviorSubject, EMPTY, filter, mergeMap, Observable} from "rxjs";
 import {
   ChartOptions,
   DeepPartial,
@@ -8,12 +8,20 @@ import {
   SeriesMarker,
   SeriesPartialOptionsMap,
   SeriesType,
-  Time, ITimeScaleApi, IPriceScaleApi, Range, LogicalRange, MouseEventParams, DataChangedScope, Point
+  Time,
+  ITimeScaleApi,
+  IPriceScaleApi,
+  Range,
+  LogicalRange,
+  MouseEventParams,
+  DataChangedScope,
+  Point
 } from "lightweight-charts";
 import {SeriesFactory, SeriesFactoryReturnType} from "../series";
 import {ChartFactory, ChartSubscriptions} from "../chart";
 import {TimescaleSubscriptions} from "../timescale";
 import {SeriesSubscriptions} from "../series/series.types";
+import {RequiresCustomSeriesView} from "../series/series.factory";
 
 
 
@@ -57,8 +65,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
 
   readonly #initialised = new BehaviorSubject<undefined | TVChart<T, HorzScaleItem>>(undefined);
   readonly initialised$: Observable<TVChart<T, HorzScaleItem> | undefined> = this.#initialised.asObservable().pipe(
-    filter(initialised => !!initialised),
-    //delay(1000 + Math.random() * 1000)
+    filter(initialised => !!initialised)
   );
 
   readonly click$: Observable<MouseEventParams<HorzScaleItem>> = this.initialised$.pipe(
@@ -138,9 +145,10 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   initialise(
     element: HTMLElement,
     type: T,
+    id?: string,
     options: DeepPartial<ChartOptions> = {},
     seriesOptions: SeriesPartialOptionsMap[T] = {},
-    id?: string
+    ...customSeriesView: RequiresCustomSeriesView<T, HorzScaleItem>
   ): void {
 
     if(this.isInitialised) {
@@ -149,7 +157,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
 
     this.#id = id;
     this.#type = type;
-    this.#init(element, type, options, seriesOptions);
+    this.#init(element, type, options, seriesOptions, ...customSeriesView);
 
     if(!this.#chart) {
       return;
@@ -196,7 +204,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   @unInitialisedWarning
   setCrossHairPositionByPoint(point: Point, time?: HorzScaleItem): void {
 
-    const xValue = time || this.#chart?.timeScale().coordinateToTime(point.x),
+    const xValue = time || this.timeScale?.coordinateToTime(point.x),
       yValue = this.#series?.coordinateToPrice(point.y);
 
     if(!xValue || !yValue) {
@@ -214,7 +222,8 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   @unInitialisedWarning
   addAdditionalSeries<ST extends SeriesType>(
     type: ST,
-    seriesOptions: SeriesPartialOptionsMap[ST]
+    seriesOptions: SeriesPartialOptionsMap[ST],
+    ...customSeriesView: RequiresCustomSeriesView<ST, HorzScaleItem>
   ): SeriesFactoryReturnType<ST, HorzScaleItem> {
 
     if(!this.#chart) {
@@ -224,7 +233,7 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
       };
     }
 
-    return this.#seriesFactory.create<ST, HorzScaleItem>(type, this.#chart, seriesOptions);
+    return this.#seriesFactory.create<ST, HorzScaleItem>(type, this.#chart, seriesOptions, ...(customSeriesView || []));
   }
 
   @unInitialisedWarning
@@ -258,7 +267,8 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     element: HTMLElement,
     type: T,
     options: DeepPartial<ChartOptions>,
-    seriesOptions: SeriesPartialOptionsMap[T]
+    seriesOptions: SeriesPartialOptionsMap[T],
+    ...customSeriesView: RequiresCustomSeriesView<T, HorzScaleItem>
   ): void {
     ({
       chart: this.#chart,
@@ -269,6 +279,6 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
     ({
       series: this.#series,
       seriesSubscriptions: this.#seriesSubscriptions
-    } = this.#seriesFactory.create<T, HorzScaleItem>(type, this.#chart, seriesOptions));
+    } = this.#seriesFactory.create<T, HorzScaleItem>(type, this.#chart, seriesOptions, ...customSeriesView));
   }
 }
