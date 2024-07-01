@@ -49,7 +49,7 @@ export class SyncService<HorzScaleItem> {
 
   readonly #crosshairPosition = new MultiStream<MouseEventParams<HorzScaleItem>>();
   readonly crosshairPosition$ = this.#crosshairPosition.stream$.pipe(
-    filter((update): update is MultiStreamOutput<MouseEventParams<HorzScaleItem>> => !!update && !!update.data),
+    filter(isMultiStreamOutput),
     tap(arg => {
       this.#syncables
         ?.filter(isSyncableWithCrosshair<HorzScaleItem>)
@@ -167,4 +167,9 @@ export class MultiStream<T> {
     this.#subscription?.unsubscribe();
     this.#subscription = undefined;
   }
+}
+
+
+function isMultiStreamOutput<T>(arg: MultiStreamOutput<T> | undefined): arg is MultiStreamOutput<T> {
+  return !!arg && !!arg.data;
 }
