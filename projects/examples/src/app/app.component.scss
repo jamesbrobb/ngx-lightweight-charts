@@ -1,3 +1,11 @@
 :host {
   display: block;
+
+  .resize {
+    display: block;
+
+    &.big {
+      height: 400px;
+    }
+  }
 }
