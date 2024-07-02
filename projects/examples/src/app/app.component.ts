@@ -38,6 +38,8 @@ import {
 import {HLCAreaSeries} from "./hlc-area-series/hlc-area-series";
 import {generateAlternativeCandleData} from "./data/sample-data";
 import {CustomSeriesExampleDirective} from "./components/custom-series-example.directive";
+import {ResizeExampleDirective} from "./components/resize-example.directive";
+import {NgClass} from "@angular/common";
 
 
 @Component({
@@ -51,7 +53,9 @@ import {CustomSeriesExampleDirective} from "./components/custom-series-example.d
     TVCandleStickChartComponent,
     TVChartCollectorDirective,
     TVChartCustomSeriesComponent,
-    CustomSeriesExampleDirective
+    CustomSeriesExampleDirective,
+    ResizeExampleDirective,
+    NgClass
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -76,6 +80,8 @@ export class AppComponent {
 
   customSeriesView = new HLCAreaSeries();
   customData = generateAlternativeCandleData(100);
+
+  big = false;
 
   constructor() {
     this.#data.data$.subscribe(data => {
