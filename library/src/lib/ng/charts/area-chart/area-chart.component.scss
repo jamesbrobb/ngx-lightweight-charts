@@ -1,3 +1,12 @@
 :host {
   display: block;
+
+  --chart-width: var(--ngx-lightweight-chart-width, 100%);
+  --chart-height: var(--ngx-lightweight-chart-height, 100%);
+
+  .chart {
+    display: block;
+    width: var(--chart-width);
+    height: var(--chart-height);
+  }
 }

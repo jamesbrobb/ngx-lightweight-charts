@@ -2,7 +2,7 @@
 <button (click)="showCharts = !showCharts">Toggle charts</button>
 <button (click)="toggleGroup()">Toggle group</button>
 <button (click)="toggleGroupCollection()">Toggle group collection</button>
-
+<button (click)="big = !big">Toggle big</button>
 <hr/>
 
 <!--<div tvChart="Candlestick" [data]="customData" tvChartCollector [customSeriesExample]="customSeriesView"></div>
@@ -16,10 +16,14 @@
     }
   </div>
   }-->
-  <div tvChartCollector tvChartSync tvChartGroup>
-    <tv-candlestick-chart id="one" [data]="klines" [options]="{height:200, rightPriceScale: {minimumWidth: 80}}"></tv-candlestick-chart>
+  <div tvChartCollector resizeExample>
+    <div>
+      <tv-candlestick-chart class="resize" [ngClass]="{big: big}" id="one" [data]="klines" [options]="{rightPriceScale: {minimumWidth: 80}}"></tv-candlestick-chart>
+    </div>
     <!--<div tvChart="Area" id="two" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>-->
-    <div tvChart="Histogram" id="three"  [data]="rsiValues" [options]="{height:200, rightPriceScale: {minimumWidth: 80}}"></div>
+    <div>
+      <div class="resize" [ngClass]="{big: big}" tvChart="Histogram" id="three"  [data]="rsiValues" [options]="{rightPriceScale: {minimumWidth: 80}}"></div>
+    </div>
     <!--<div tvChart="Line" id="four" [data]="rsiValues" [options]="{height:200}"></div>-->
   </div>
 <!--</div>-->
