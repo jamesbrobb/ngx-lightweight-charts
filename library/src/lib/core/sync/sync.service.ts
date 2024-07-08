@@ -4,6 +4,7 @@ import {BehaviorSubject, filter, map, merge, Observable, share, Subject, Subscri
 
 export type Syncable = {
   setVisibleLogicalRange(range: Range<number>): void
+  getVisibleLogicalRange(): LogicalRange | null | undefined
   readonly visibleLogicalRangeChange$: Observable<LogicalRange | null>
 }
 
@@ -122,7 +123,7 @@ export class SyncService<HorzScaleItem> {
       this.#syncables.map(syncable => syncable.visibleLogicalRangeChange$)
     );
 
-    const currentLogicalRange = this.#visibleLogicalRange.currentValue;
+    const currentLogicalRange = this.#getCurrentVisibleLogicalRange();
 
     if(currentLogicalRange) {
       this.#syncables.forEach(syncable => {
@@ -141,6 +142,16 @@ export class SyncService<HorzScaleItem> {
     this.#crosshairPosition.destroy();
     this.#destroy.next();
     this.#destroy.complete();
+  }
+
+  #getCurrentVisibleLogicalRange(): LogicalRange | null | undefined {
+    let value = this.#visibleLogicalRange.currentValue;
+
+    if(value) {
+      return value;
+    }
+
+    return this.#syncables?.[0]?.getVisibleLogicalRange();
   }
 }
 
