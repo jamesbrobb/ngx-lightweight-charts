@@ -1,6 +1,6 @@
 {
   "name": "ngx-lightweight-charts",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Angular wrapper for Trading View lightweight-charts",
   "scripts": {
     "release:beta": "npm version prerelease --preid=beta && ng build && cd ../dist/ngx-lightweight-charts && npm publish --tag beta",
