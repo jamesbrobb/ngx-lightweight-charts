@@ -192,6 +192,11 @@ export class TVChart<T extends SeriesType, HorzScaleItem = Time> {
   }
 
   @unInitialisedWarning
+  getVisibleLogicalRange(): LogicalRange | undefined | null {
+    return this.#chart?.timeScale().getVisibleLogicalRange();
+  }
+
+  @unInitialisedWarning
   setVisibleRange(range: Range<HorzScaleItem>): void {
     this.#chart?.timeScale().setVisibleRange(range);
   }
