@@ -122,6 +122,14 @@ export class SyncService<HorzScaleItem> {
       this.#syncables.map(syncable => syncable.visibleLogicalRangeChange$)
     );
 
+    const currentLogicalRange = this.#visibleLogicalRange.currentValue;
+
+    if(currentLogicalRange) {
+      this.#syncables.forEach(syncable => {
+        syncable.setVisibleLogicalRange(currentLogicalRange);
+      });
+    }
+
     this.#crosshairPosition.updateObservables(
       this.#syncables.filter(isSyncableWithCrosshair<HorzScaleItem>)
         .map(syncable => syncable.crossHairMove$)
@@ -149,6 +157,10 @@ export class MultiStream<T> {
   readonly stream$ = this.#subject.asObservable();
 
   #subscription?: Subscription;
+
+  get currentValue(): T | undefined {
+    return this.#subject.value?.data;
+  }
 
   updateObservables(streams: Observable<T>[]): void {
 
