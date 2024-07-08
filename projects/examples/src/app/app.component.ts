@@ -18,44 +18,21 @@ import {
   TVCandleStickChartComponent,
   TVChartCollectorDirective,
   TVChartCustomSeriesComponent,
-  DEFAULT_DARK_CHART_OPTIONS
+  DEFAULT_DARK_CHART_OPTIONS,
+  TVChart
 } from "ngx-lightweight-charts";
 
-import {
-  interval,
-  take,
-  Subject,
-  mergeMap,
-  BehaviorSubject,
-  tap,
-  switchMap,
-  from,
-  timer,
-  filter,
-  Observable,
-  bufferCount
-} from 'rxjs';
-import {HLCAreaSeries} from "./hlc-area-series/hlc-area-series";
-import {generateAlternativeCandleData} from "./data/sample-data";
 import {CustomSeriesExampleDirective} from "./components/custom-series-example.directive";
 import {ResizeExampleDirective} from "./components/resize-example.directive";
-import {NgClass} from "@angular/common";
+import {NgClass, NgFor} from "@angular/common";
+import {Issue5Component} from "./components/issues/issue-#5/issue-5/issue-5.component";
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    TVChartDirective,
-    TVChartGroupDirective,
-    TVChartBorderDirective,
-    TVChartSyncDirective,
-    TVCandleStickChartComponent,
-    TVChartCollectorDirective,
-    TVChartCustomSeriesComponent,
-    CustomSeriesExampleDirective,
-    ResizeExampleDirective,
-    NgClass
+    Issue5Component
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -68,41 +45,10 @@ export class AppComponent {
   markers?: SeriesMarker<Time>[];
   rsiValues?: LineData<Time>[];
 
-  showChart = true;
-  showCharts = true;
-  groupOptions = DEFAULT_DARK_CHART_OPTIONS
-
-  groupCharts = signal(['one']);
-  groupToggle = false;
-
-  groupCollection = signal(['one', 'four']);
-  groupCollectionToggle = false;
-
-  customSeriesView = new HLCAreaSeries();
-  customData = generateAlternativeCandleData(100);
-
-  big = false;
-
   constructor() {
     this.#data.data$.subscribe(data => {
       this.#parseData(data);
     });
-
-    //this.testIt();
-  }
-
-  toggleGroup() {
-    this.groupToggle = !this.groupToggle;
-    this.groupCharts.set(this.groupToggle ? ['one', 'two'] : ['one']);
-  }
-
-  toggleGroupCollection() {
-    this.groupCollectionToggle = !this.groupCollectionToggle;
-    this.groupCollection.set(this.groupCollectionToggle ? ['one', 'two', 'four'] : ['one', 'four']);
-  }
-
-  onChartAction(arg: any) {
-    console.log(arg);
   }
 
   #parseData(table: Table | undefined): void {
@@ -188,51 +134,4 @@ export class AppComponent {
       text: `${text}${price}`
     };
   }
-
-  obs3 = new Subject<Observable<boolean>[]>();
-  obs3$ = this.obs3.asObservable();
-  obs2 = new BehaviorSubject<boolean>(false);
-  obs2$ = this.obs2.asObservable()//.pipe(share());
-  obs1$ = timer(1000).pipe(
-    tap(() => {
-      this.obs2.next(true);
-    })
-  );
-  obs4$ = interval(500).pipe(
-    take(5),
-    tap(() => {
-      this.obs3.next([this.obs2$, this.obs2$, this.obs2$]);
-    })
-  );
-
-  testIt() {
-
-    this.obs3$
-      .pipe(
-        switchMap((obs) => {
-          return from(obs).pipe(
-            mergeMap((o) => {
-              return o.pipe(
-                filter((v) => v)
-              )
-            }),
-            bufferCount(obs.length),
-          )
-        }),
-        tap((arg) => console.log('tap', arg))
-      ).subscribe()
-
-
-    this.obs1$.subscribe({
-      next: (arg: any) => console.log('1', arg),
-      complete: () => console.log('1 completed'),
-    });
-
-    this.obs4$.subscribe({
-      next: (arg: any) => console.log('4', arg),
-      complete: () => console.log('4 completed'),
-    });
-  }
-
-  protected readonly console = console;
 }

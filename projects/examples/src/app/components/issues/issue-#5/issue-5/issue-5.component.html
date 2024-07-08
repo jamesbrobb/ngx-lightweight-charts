@@ -1,0 +1,10 @@
+<button (click)="addChart()">Add indicator chart</button>
+<button (click)="removeChart()">Remove indicator chart</button>
+<hr/>
+
+<div tvChartCollector tvChartSync>
+  <tv-candlestick-chart id="one" [data]="data()" [options]="options" (initialised)="onMainChartInit($event)"></tv-candlestick-chart>
+  @for(chart of getIndicatorCharts();let i = $index; track i) {
+    <div tvChart="Line" [id]="i.toString()" [data]="indiData()" [options]="options" (initialised)="onIndicatorChartInit($event, chart.id)"></div>
+  }
+</div>
