@@ -18,6 +18,7 @@ import {
   TVCandleStickChartComponent,
   TVChartCollectorDirective,
   TVChartCustomSeriesComponent,
+  TVChartCrosshairDataDirective,
   DEFAULT_DARK_CHART_OPTIONS
 } from "ngx-lightweight-charts";
 
@@ -53,6 +54,7 @@ import {NgClass} from "@angular/common";
     TVCandleStickChartComponent,
     TVChartCollectorDirective,
     TVChartCustomSeriesComponent,
+    TVChartCrosshairDataDirective,
     CustomSeriesExampleDirective,
     ResizeExampleDirective,
     NgClass
@@ -235,4 +237,31 @@ export class AppComponent {
   }
 
   protected readonly console = console;
+
+  protected crosshairData: {
+    date: string,
+    open: number,
+    high: number,
+    low: number,
+    close: number,
+    rsi?: number,
+  } | null = null;
+
+  onCrosshairData(data: any) {
+    if(!data) {
+      this.crosshairData = null;
+    } else {
+      this.crosshairData = {
+        date: new Date(data.ohlc.time * 1000).toUTCString(),
+        open: data.ohlc.open,
+        high: data.ohlc.high,
+        low: data.ohlc.low,
+        close: data.ohlc.close,
+      }
+
+      if(data.rsi) {
+        this.crosshairData.rsi = data.rsi.value.toFixed(3);
+      }
+    }
+  }
 }

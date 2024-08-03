@@ -1,4 +1,5 @@
 export * from './chart';
+export * from './crosshair';
 export * from './series';
 export * from './sync';
 export * from './timescale';

@@ -1,5 +1,6 @@
 import {LogicalRange, MouseEventParams, Point, Range} from "lightweight-charts";
-import {BehaviorSubject, filter, map, merge, Observable, share, Subject, Subscription, takeUntil, tap} from "rxjs";
+import {filter, map, Observable, share, Subject, takeUntil, tap} from "rxjs";
+import {isMultiStreamOutput, isOutputWithData, MultiStream} from "./multi-stream";
 
 
 export type Syncable = {
@@ -18,10 +19,6 @@ export function isSyncableWithCrosshair<HorzScaleItem>(arg: Syncable): arg is Sy
   return 'setCrosshairPosition' in arg &&
     'clearCrosshairPosition' in arg &&
     'crossHairMove$' in arg;
-}
-
-export function isOutputWithData<T>(update: MultiStreamOutput<T> | undefined): update is MultiStreamOutput<NonNullable<T>> {
-  return !!update && !!update.data;
 }
 
 
@@ -153,46 +150,4 @@ export class SyncService<HorzScaleItem> {
 
     return this.#syncables?.[0]?.getVisibleLogicalRange();
   }
-}
-
-
-export type MultiStreamOutput<T> = {
-  source: Observable<T>,
-  data: T
-}
-
-
-export class MultiStream<T> {
-
-  readonly #subject = new BehaviorSubject<MultiStreamOutput<T> | undefined>(undefined);
-  readonly stream$ = this.#subject.asObservable();
-
-  #subscription?: Subscription;
-
-  get currentValue(): T | undefined {
-    return this.#subject.value?.data;
-  }
-
-  updateObservables(streams: Observable<T>[]): void {
-
-    this.#cleanUp();
-
-    this.#subscription = merge(...streams.map(arg => arg.pipe(
-      map(data => ({source: arg, data}))
-    ))).subscribe(this.#subject);
-  }
-
-  destroy(): void {
-    this.#cleanUp();
-  }
-
-  #cleanUp(): void {
-    this.#subscription?.unsubscribe();
-    this.#subscription = undefined;
-  }
-}
-
-
-function isMultiStreamOutput<T>(arg: MultiStreamOutput<T> | undefined): arg is MultiStreamOutput<T> {
-  return !!arg && !!arg.data;
 }
