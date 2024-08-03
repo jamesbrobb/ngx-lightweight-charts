@@ -17,9 +17,9 @@ A (re)implementation of the entire `lightweight-charts` [api][11].
 2) [Displaying a chart](#2)
 3) [Common chart inputs and outputs](#3)
 4) [TVChart - accessing the underlying IChartAPI and ISeriesApi instance](#4)
-5) [Implemented behaviour](#5)
-6) [Adding behaviour](#6)
-7) [Displaying custom data](#7)
+5) [Displaying custom data](#5)
+6) [Implemented behaviour](#6)
+7) [Adding behaviour](#7)
 ---
 
 # 1.
@@ -116,7 +116,7 @@ All charts expose the following signal based inputs and outputs:
 
 # 4.
 
-### TVChart - accessing the underlying [IChartAPI][10] instance
+### TVChart - accessing the underlying [IChartAPI][10] and [ISeriesApi][12] instance
 
 `TVChart` is the core class that creates, manages and exposes a trading view [chart][10] and its associated [series][12].
 
@@ -256,68 +256,6 @@ export class MyDirective {
 ```
 # 5.
 
-### Implemented behaviour
-
-### `TVChartGroupDirective`
-
-Visually groups multiple charts
-
-```html
-<div tvChartCollector tvChartGroup>
-  <tv-area-chart [data]="pointData"></tv-area-chart>
-  <tv-histogram-chart [data]="pointData"></tv-histogram-chart>
-  <tv-line-chart [data]="pointData"></tv-line-chart>
-</div>
-```
-
-![Chart group!](/assets/chart-group.png "Chart group")
-
-### `TVChartSyncDirective`
-
-Syncs the visible logical range (scale and position) and crosshair of multiple charts
-
-```html
-<div tvChartCollector tvChartSync>
-  <tv-candlestick-chart [data]="klineData"></tv-candlestick-chart>
-  <tv-histogram-chart [data]="pointData"></tv-histogram-chart>
-</div>
-```
-
-![Chart sync!](/assets/chart-sync.png "Chart sync")
-
-# 6.
-
-### Adding behaviour
-
-To add your own behaviour it's as simple as doing the following:
-
-```html
-<div tvChart="Line" [data]="chartData" tvChartCollector yourDirective></div>
-```
-
-```ts
-import {Directive, effect, inject} from "@angular/core";
-import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
-
-@Directive({
-  selector: '[yourDirective]',
-  standalone: true
-})
-export class YourDirective {
-  readonly #collector = inject(TVChartCollectorDirective);
-
-  constructor() {
-    effect(() => {
-      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
-        //... perform some action through the TVChart API
-      });
-    });
-  }
-}
-```
-
-# 7.
-
 ### Displaying custom data
 
 The following example uses the [Custom chart HLC area][16] implementation - source code can be found [here][17]
@@ -368,7 +306,7 @@ export class CustomSeriesExampleDirective<HorzScaleItem = Time> {
 
   readonly #collector = inject(TVChartCollectorDirective);
 
-  data = input.required<CustomData<HorzScaleItem>[]>();
+  data = input<CustomData<HorzScaleItem>[]>();
   customSeriesView = input.required<ICustomSeriesPaneView<HorzScaleItem>>({alias: 'customSeriesExample'});
   seriesOptions = input<CustomSeriesOptions>({} as CustomSeriesOptions);
 
@@ -397,6 +335,165 @@ export class CustomSeriesExampleDirective<HorzScaleItem = Time> {
 ```
 
 ![Additional custom series!](/assets/additional-custom-series.png "Displaying an additional series")
+
+# 6.
+
+### Implemented behaviour
+
+---
+
+### `TVChartGroupDirective`
+
+Visually groups multiple charts
+
+```html
+<div tvChartCollector tvChartGroup>
+  <tv-area-chart [data]="pointData"></tv-area-chart>
+  <tv-histogram-chart [data]="pointData"></tv-histogram-chart>
+  <tv-line-chart [data]="pointData"></tv-line-chart>
+</div>
+```
+
+![Chart group!](/assets/chart-group.png "Chart group")
+
+---
+
+### `TVChartSyncDirective`
+
+Syncs the visible logical range (scale and position) and cross-hair of multiple charts
+
+```html
+<div tvChartCollector tvChartSync>
+  <tv-candlestick-chart [data]="klineData"></tv-candlestick-chart>
+  <tv-histogram-chart [data]="pointData"></tv-histogram-chart>
+</div>
+```
+
+![Chart sync!](/assets/chart-sync.png "Chart sync")
+
+---
+
+### `TVChartCrosshairDataDirective`
+
+Outputs data relating to the current cross-hair position
+
+Single chart:
+
+```html
+<tv-candlestick-chart [data]="klineData" tvChartCollector (tvChartCrosshairData)="onCrosshairData($event)"></tv-candlestick-chart>
+```
+
+```ts
+import {Component} from "@angular/core";
+import {TVChartCrosshairDataDirective} from "ngx-lightweight-charts";
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    TVChartCrosshairDataDirective
+  ],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+
+  onCrosshairData(data: {[key: string | number]: Record<string, any>}): void {
+    /*
+      The format of the data is as follows
+      {
+        [chart id || index]: {
+          // cross-hair point data
+        }
+      }
+     */
+    
+    // do something with data here...
+  }
+}
+```
+
+Multiple charts:
+
+```html
+<div tvChartCollector tvChartSync (tvChartCrosshairData)="onCrosshairData($event)">
+  <tv-candlestick-chart id="ohlc" [data]="klines" [options]="{rightPriceScale: {minimumWidth: 80}}"></tv-candlestick-chart>
+  <div tvChart="Histogram" [data]="rsiValues" [options]="{rightPriceScale: {minimumWidth: 80}}"></div>
+</div>
+```
+
+```ts
+import {Component} from "@angular/core";
+import {OhlcData, HistogramData, Time} from "lightweight-charts";
+import {TVChartCrosshairDataDirective} from "ngx-lightweight-charts";
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    TVChartCrosshairDataDirective
+  ],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  
+  klines: OhlcData<Time>[] = [/* loaded kline data */];
+  rsiData: HistogramData<Time>[] = [/* loaded rsi data */];
+
+  onCrosshairData(data: {[key: string | number]: Record<string, any>}): void {
+    /*
+      The format of the data is as follows
+      {
+        ohlc: {
+          time: ...,
+          open: ...,
+          high: ...,
+          low: ...,
+          close: ...
+        },
+        2: {
+          time: ...,
+          value: ...
+        }
+      }
+     */
+    
+    // do something with data here...
+  }
+}
+```
+
+![Cross-hair data!](/assets/crosshair-data.png "Cross-hair data")
+
+# 7.
+
+### Adding behaviour
+
+To add your own behaviour it's as simple as doing the following:
+
+```html
+<div tvChart="Line" [data]="chartData" tvChartCollector yourDirective></div>
+```
+
+```ts
+import {Directive, effect, inject} from "@angular/core";
+import {TVChartCollectorDirective, TVChart} from "ngx-lightweight-charts";
+
+@Directive({
+  selector: '[yourDirective]',
+  standalone: true
+})
+export class YourDirective {
+  readonly #collector = inject(TVChartCollectorDirective);
+
+  constructor() {
+    effect(() => {
+      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
+        //... perform some action through the TVChart API
+      });
+    });
+  }
+}
+```
 
 
 
