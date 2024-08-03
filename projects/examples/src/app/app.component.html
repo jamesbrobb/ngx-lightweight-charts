@@ -16,13 +16,39 @@
     }
   </div>
   }-->
-  <div tvChartCollector resizeExample>
+
+  <div class="crosshair-data">
+    @if(crosshairData) {
+      <div>
+        <span class="label">Date: </span>
+        <span>{{crosshairData.date}}</span>
+        <span> - </span>
+        <span class="label">O: </span>
+        <span>{{crosshairData.open}}</span>
+        <span> - </span>
+        <span class="label">H: </span>
+        <span>{{crosshairData.high}}</span>
+        <span> - </span>
+        <span class="label">L: </span>
+        <span>{{crosshairData.low}}</span>
+        <span> - </span>
+        <span class="label">C: </span>
+        <span>{{crosshairData.close}}</span>
+        @if(crosshairData.rsi) {
+          <span> - </span>
+          <span class="label">RSI: </span>
+          <span>{{crosshairData.rsi}}</span>
+        }
+      </div>
+    }
+  </div>
+  <div tvChartCollector tvChartSync (tvChartCrosshairData)="onCrosshairData($event)">
     <div>
-      <tv-candlestick-chart class="resize" [ngClass]="{big: big}" id="one" [data]="klines" [options]="{rightPriceScale: {minimumWidth: 80}}"></tv-candlestick-chart>
+      <tv-candlestick-chart class="resize" [ngClass]="{big: big}" id="ohlc" [data]="klines" [options]="{rightPriceScale: {minimumWidth: 80}}"></tv-candlestick-chart>
     </div>
     <!--<div tvChart="Area" id="two" [seriesOptions]="{}" [data]="rsiValues" [options]="{height:200}"></div>-->
     <div>
-      <div class="resize" [ngClass]="{big: big}" tvChart="Histogram" id="three"  [data]="rsiValues" [options]="{rightPriceScale: {minimumWidth: 80}}"></div>
+      <div class="resize" [ngClass]="{big: big}" tvChart="Histogram" id="rsi"  [data]="rsiValues" [options]="{rightPriceScale: {minimumWidth: 80}}"></div>
     </div>
     <!--<div tvChart="Line" id="four" [data]="rsiValues" [options]="{height:200}"></div>-->
   </div>

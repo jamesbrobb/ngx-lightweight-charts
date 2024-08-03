@@ -8,4 +8,15 @@
       height: 400px;
     }
   }
+
+  .crosshair-data {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #555;
+    min-height: 30px;
+
+    .label {
+      color: #222
+    }
+  }
 }

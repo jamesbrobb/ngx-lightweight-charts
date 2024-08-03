@@ -1,4 +1,4 @@
-import {Directive, effect, inject, input} from '@angular/core';
+import {Directive, effect, inject, input, OnDestroy} from '@angular/core';
 import {filterChartsByIds, SyncService} from "../../core";
 import {TVChartCollectorDirective} from "../chart-collector/chart-collector.directive";
 import {outputFromObservable} from "@angular/core/rxjs-interop";
@@ -14,7 +14,7 @@ import {outputFromObservable} from "@angular/core/rxjs-interop";
     }
   }]
 })
-export class TVChartSyncDirective {
+export class TVChartSyncDirective implements OnDestroy {
 
   readonly #collector = inject(TVChartCollectorDirective);
   readonly #syncService = inject(SyncService);
