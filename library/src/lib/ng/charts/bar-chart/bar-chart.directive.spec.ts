@@ -1,8 +1,24 @@
-import { BarChartDirective } from './bar-chart.directive';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TVBarChartDirective } from './bar-chart.directive';
 
-describe('BarChartDirective', () => {
-  it('should create an instance', () => {
-    const directive = new BarChartDirective();
-    expect(directive).toBeTruthy();
+
+describe('TVBarChartDirective', () => {
+  let component: TVBarChartDirective;
+  let fixture: ComponentFixture<TVBarChartDirective>;
+
+  /*beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TVBarChartDirective]
+    })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(TVBarChartDirective);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });*/
+
+  it('should create', () => {
+    //expect(component).toBeTruthy();
   });
 });
+

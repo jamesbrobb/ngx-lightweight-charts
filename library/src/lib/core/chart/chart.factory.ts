@@ -1,5 +1,5 @@
 import {
-  ChartOptions, ChartOptionsImpl,
+  ChartOptions,
   createChart,
   createChartEx,
   DeepPartial,
@@ -21,8 +21,6 @@ export type ChartFactoryReturnType<HorzScaleItem = Time> = {
 
 type getOptionsType<T, HorzScaleItem> = [T] extends [never] ? ChartOptions :
   T extends IHorzScaleBehavior<HorzScaleItem> ? ReturnType<T['options']> : never
-
-type blah<T> = T extends ChartOptions ? T : never
 
 type getScaleBehaviorType<T, HorzScaleItem> = T extends IHorzScaleBehavior<HorzScaleItem> ? T : never
 
