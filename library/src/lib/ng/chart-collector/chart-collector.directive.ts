@@ -2,7 +2,7 @@ import {bufferCount, from, map, mergeMap, share, switchMap} from "rxjs";
 import {computed, contentChildren, Directive, inject, input} from '@angular/core';
 import {takeUntilDestroyed, toObservable, toSignal} from "@angular/core/rxjs-interop";
 import {SeriesType} from "lightweight-charts";
-import {filterChartsByIds, TVChart} from "../../core";
+import {filterByIds, TVChart} from "../../core";
 
 
 @Directive({
@@ -31,6 +31,6 @@ export class TVChartCollectorDirective<T extends SeriesType, HorzScaleItem> {
   );
 
   readonly charts = computed(() => {
-    return this.#charts()?.filter(filterChartsByIds(this.ids()));
+    return this.#charts()?.filter(filterByIds(this.ids()));
   });
 }

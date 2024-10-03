@@ -2,7 +2,7 @@ import deepmerge from "deepmerge";
 import {Directive, effect, inject, input} from '@angular/core';
 import {ChartOptions, DeepPartial, SeriesType} from "lightweight-charts";
 import {TVChartCollectorDirective} from "../chart-collector/chart-collector.directive";
-import {filterChartsByIds} from "../../core";
+import {filterByIds} from "../../core";
 
 
 @Directive({
@@ -21,7 +21,7 @@ export class TVChartGroupDirective<T extends SeriesType, HorzItemScale> {
   constructor() {
     effect(() => {
       this.#collector.charts()
-        ?.filter(filterChartsByIds(this.ids()))
+        ?.filter(filterByIds(this.ids()))
         .forEach((chart, index, charts) => {
           chart.applyOptions(
             this.#getStyles(index === charts.length - 1)

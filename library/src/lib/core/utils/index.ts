@@ -1,1 +1,1 @@
-export {filterChartsByIds} from "./utils";
+export {filterByIds} from "./utils";

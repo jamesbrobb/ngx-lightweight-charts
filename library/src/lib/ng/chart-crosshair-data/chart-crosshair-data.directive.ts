@@ -1,5 +1,5 @@
 import {Directive, effect, inject, input, OnDestroy} from '@angular/core';
-import {CrosshairService, filterChartsByIds} from "../../core";
+import {CrosshairService, filterByIds} from "../../core";
 import {TVChartCollectorDirective} from "../chart-collector/chart-collector.directive";
 import {outputFromObservable} from "@angular/core/rxjs-interop";
 
@@ -26,7 +26,7 @@ export class TVChartCrosshairDataDirective implements OnDestroy {
   constructor() {
     effect(() => {
       this.#crosshairService.register(
-        (this.#collector.charts() || []).filter(filterChartsByIds(this.ids()))
+        (this.#collector.charts() || []).filter(filterByIds(this.ids()))
       );
     });
   }

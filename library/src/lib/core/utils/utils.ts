@@ -1,14 +1,16 @@
-import {TVChart} from "../tv-chart";
-import {SeriesType} from "lightweight-charts";
+
+export type Identifiable = {
+  id?: string
+}
 
 
-export function filterChartsByIds<T extends SeriesType, HorxItemScale>(
+export function filterByIds<T extends Identifiable>(
   ids: string | string[]
-): (chart: TVChart<T, HorxItemScale>) => boolean {
+): (arg: T) => arg is T {
 
   const values = Array.isArray(ids) ? ids : !ids ? [] : [ids];
 
-  return (chart: TVChart<T, HorxItemScale>) => {
-    return !values.length || !!(chart.id && values.includes(chart.id));
+  return (arg: T): arg is T => {
+    return !values.length || !!(arg.id && values.includes(arg.id));
   }
 }
