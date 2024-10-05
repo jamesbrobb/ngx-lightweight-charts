@@ -23,6 +23,7 @@ export class MultiStream<T> {
     this.#cleanUp();
 
     if(!streams.length) {
+      this.#subject.next(undefined);
       return;
     }
 
@@ -33,6 +34,7 @@ export class MultiStream<T> {
 
   destroy(): void {
     this.#cleanUp();
+    this.#subject.complete();
   }
 
   #cleanUp(): void {
