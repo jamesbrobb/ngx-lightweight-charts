@@ -1,35 +1,49 @@
-import {of, Subject} from "rxjs";
+import {Observable, of, Subject, Subscription} from "rxjs";
 import {isMultiStreamOutput, isOutputWithData, MultiStream, MultiStreamOutput} from "./multi-stream";
 
-
 describe('MultiStream', () => {
+  let source1: Subject<string>;
+  let source2: Subject<string>;
+  let source3: Subject<string>;
+  let obs1: Observable<string>;
+  let obs2: Observable<string>;
+  let obs3: Observable<string>;
+  let multiStream: MultiStream<string>;
+  let sub: Subscription;
+
+  beforeEach(() => {
+    source1 = new Subject<string>();
+    source2 = new Subject<string>();
+    source3 = new Subject<string>();
+
+    obs1 = source1.asObservable();
+    obs2 = source2.asObservable();
+    obs3 = source3.asObservable();
+
+    multiStream = new MultiStream<string>();
+    multiStream.updateObservables([obs1, obs2, obs3]);
+  });
+
+  afterEach(() => {
+    if(!sub) {
+      return;
+    }
+    sub.unsubscribe();
+  });
 
   it('should emit values when any of supplied sources emit', () => {
 
-    const source1 = new Subject<string>(),
-      source2 = new Subject<string>(),
-      source3 = new Subject<string>();
-
-    const obs1 = source1.asObservable(),
-      obs2 = source2.asObservable(),
-      obs3 = source3.asObservable();
-
-    const multiStream = new MultiStream<string>();
-    multiStream.updateObservables([
-      obs1, obs2, obs3
-    ]);
-
     const result: (MultiStreamOutput<string> | undefined)[] = [],
-      sub = multiStream.stream$.subscribe((arg) => {
-        result.push(arg);
-      });
+      expectedResult: (MultiStreamOutput<string> | undefined)[] = [
+        undefined,
+        {source: obs1, data: 'a'},
+        {source: obs2, data: 'c'},
+        {source: obs3, data: 'd'},
+      ];
 
-    const expectedResult: (MultiStreamOutput<string> | undefined)[] = [
-      undefined,
-      {source: obs1, data: 'a'},
-      {source: obs2, data: 'c'},
-      {source: obs3, data: 'd'},
-    ];
+    sub = multiStream.stream$.subscribe((arg) => {
+      result.push(arg);
+    });
 
     source1.next('a');
     source2.next('c');
@@ -39,24 +53,9 @@ describe('MultiStream', () => {
       expect(arg?.source).toBe(expectedResult[index]?.source);
       expect(arg?.data).toBe(expectedResult[index]?.data);
     });
-
-    sub.unsubscribe();
   });
 
   it('should no longer observe overwritten observables', () => {
-
-    const source1 = new Subject<string>(),
-      source2 = new Subject<string>(),
-      source3 = new Subject<string>();
-
-    const obs1 = source1.asObservable(),
-      obs2 = source2.asObservable(),
-      obs3 = source3.asObservable();
-
-    const multiStream = new MultiStream<string>();
-    multiStream.updateObservables([
-      obs1, obs2, obs3
-    ]);
 
     source1.next('1-a');
     source2.next('2-a');
@@ -72,10 +71,11 @@ describe('MultiStream', () => {
     expect(source2.observed).toBe(true);
     expect(source3.observed).toBe(false);
 
-    const result: (MultiStreamOutput<string> | undefined)[] = [],
-      sub = multiStream.stream$.subscribe((arg) => {
-        result.push(arg);
-      });
+    const result: (MultiStreamOutput<string> | undefined)[] = [];
+
+    sub = multiStream.stream$.subscribe((arg) => {
+      result.push(arg);
+    });
 
     source1.next('1-b');
     source2.next('2-b');
@@ -83,24 +83,9 @@ describe('MultiStream', () => {
 
     expect(result.length).toEqual(2);
     expect(result[1]?.data).toEqual('2-b');
-
-    sub.unsubscribe();
   })
 
   it('should reset current value to undefined if all observables cleared with an empty array', () => {
-
-    const source1 = new Subject<string>(),
-      source2 = new Subject<string>(),
-      source3 = new Subject<string>();
-
-    const obs1 = source1.asObservable(),
-      obs2 = source2.asObservable(),
-      obs3 = source3.asObservable();
-
-    const multiStream = new MultiStream<string>();
-    multiStream.updateObservables([
-      obs1, obs2, obs3
-    ]);
 
     source1.next('a');
     source2.next('c');
@@ -108,30 +93,16 @@ describe('MultiStream', () => {
 
     multiStream.updateObservables([]);
 
-    const result: (MultiStreamOutput<string> | undefined)[] = [],
-      sub = multiStream.stream$.subscribe((arg) => {
-        result.push(arg);
-      });
+    const result: (MultiStreamOutput<string> | undefined)[] = [];
+
+    sub = multiStream.stream$.subscribe((arg) => {
+      result.push(arg);
+    });
 
     expect(result).toEqual([undefined]);
-
-    sub.unsubscribe();
   });
 
   it('should unsubscribe all supplied observables on destroy', () => {
-
-    const source1 = new Subject<string>(),
-      source2 = new Subject<string>(),
-      source3 = new Subject<string>();
-
-    const obs1 = source1.asObservable(),
-      obs2 = source2.asObservable(),
-      obs3 = source3.asObservable();
-
-    const multiStream = new MultiStream<string>();
-    multiStream.updateObservables([
-      obs1, obs2, obs3
-    ]);
 
     expect(source1.observed).toBe(true);
     expect(source2.observed).toBe(true);
@@ -145,8 +116,6 @@ describe('MultiStream', () => {
   });
 
   it('should close all subscriptions to stream$ on destroy', () => {
-
-    const multiStream = new MultiStream<string>();
 
     const sub1 = multiStream.stream$.subscribe();
     const sub2 = multiStream.stream$.subscribe();
