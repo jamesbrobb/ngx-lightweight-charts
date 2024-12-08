@@ -76,7 +76,7 @@ export class CrosshairService<HorzScaleItem> {
       return;
     }
 
-    this.#crosshairPosition.updateObservables(
+    this.#crosshairPosition.setObservables(
       this.#charts.map(chart => chart.crossHairMove$)
     )
   }

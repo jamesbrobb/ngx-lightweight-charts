@@ -11,7 +11,7 @@ import {filterByIds, TVChart} from "../../core";
 })
 export class TVChartCollectorDirective<T extends SeriesType, HorzScaleItem> {
 
-  readonly #chart = inject(TVChart<T, HorzScaleItem>, {optional: true});
+  readonly #chart = inject(TVChart<T, HorzScaleItem>, {optional: true}); // this needs to be self
 
   ids = input<string | string[]>('', {alias: 'tvChartCollector'});
 
