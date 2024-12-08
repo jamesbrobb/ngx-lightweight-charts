@@ -110,30 +110,6 @@ export class SyncService<HorzScaleItem> {
     this.#updateStreams();
   }
 
-  #updateStreams(): void {
-
-    if(!this.#syncables) {
-      return;
-    }
-
-    this.#visibleLogicalRange.updateObservables(
-      this.#syncables.map(syncable => syncable.visibleLogicalRangeChange$)
-    );
-
-    const currentLogicalRange = this.#getCurrentVisibleLogicalRange();
-
-    if(currentLogicalRange) {
-      this.#syncables.forEach(syncable => {
-        syncable.setVisibleLogicalRange(currentLogicalRange);
-      });
-    }
-
-    this.#crosshairPosition.updateObservables(
-      this.#syncables.filter(isSyncableWithCrosshair<HorzScaleItem>)
-        .map(syncable => syncable.crossHairMove$)
-    );
-  }
-
   destroy(): void {
     this.#visibleLogicalRange.destroy();
     this.#crosshairPosition.destroy();
@@ -141,12 +117,37 @@ export class SyncService<HorzScaleItem> {
     this.#destroy.complete();
   }
 
-  #getCurrentVisibleLogicalRange(): LogicalRange | null | undefined {
-    let value = this.#visibleLogicalRange.currentValue;
+  #updateStreams(): void {
 
+    if(!this.#syncables) {
+      return;
+    }
+    console.log('before updateObservables')
+    this.#visibleLogicalRange.setObservables(
+      this.#syncables.map(syncable => syncable.visibleLogicalRangeChange$)
+    );
+    console.log('after updateObservables')
+    const currentLogicalRange = this.#getCurrentVisibleLogicalRange();
+    console.log('currentLogicalRange', currentLogicalRange);
+    if(currentLogicalRange) {
+      this.#syncables.forEach(syncable => {
+        syncable.setVisibleLogicalRange(currentLogicalRange);
+      });
+    }
+
+    this.#crosshairPosition.setObservables(
+      this.#syncables.filter(isSyncableWithCrosshair<HorzScaleItem>)
+        .map(syncable => syncable.crossHairMove$)
+    );
+  }
+
+  #getCurrentVisibleLogicalRange(): LogicalRange | null | undefined {
+    /*
+    let value = this.#visibleLogicalRange.currentValue;
+    console.log('getCurrentVisibleLogicalRange', value);
     if(value) {
       return value;
-    }
+    }*/
 
     return this.#syncables?.[0]?.getVisibleLogicalRange();
   }

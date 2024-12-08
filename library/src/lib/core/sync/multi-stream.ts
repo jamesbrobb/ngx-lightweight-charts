@@ -1,4 +1,4 @@
-import {BehaviorSubject, map, merge, Observable, Subscription} from "rxjs";
+import {map, merge, Observable, Subject, Subscription} from "rxjs";
 
 
 export type MultiStreamOutput<T> = {
@@ -9,26 +9,19 @@ export type MultiStreamOutput<T> = {
 
 export class MultiStream<T> {
 
-  readonly #subject = new BehaviorSubject<MultiStreamOutput<T> | undefined>(undefined);
+  readonly #subject = new Subject<MultiStreamOutput<T> | undefined>();
   readonly stream$ = this.#subject.asObservable();
 
   #subscription?: Subscription;
 
-  get currentValue(): T | undefined {
-    return this.#subject.value?.data;
-  }
-
-  updateObservables(streams: Observable<T>[]): void {
+  setObservables(streams: Observable<T>[]): void {
 
     this.#cleanUp();
 
-    if(!streams.length) {
-      this.#subject.next(undefined);
-      return;
-    }
-
     this.#subscription = merge(...streams.map(arg => arg.pipe(
-      map(data => ({source: arg, data}))
+      map(data => {
+        return ({source: arg, data})
+      })
     ))).subscribe(this.#subject);
   }
 

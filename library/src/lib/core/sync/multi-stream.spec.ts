@@ -1,5 +1,6 @@
-import {Observable, of, Subject, Subscription} from "rxjs";
+import {map, Observable, of, Subject, Subscription, tap} from "rxjs";
 import {isMultiStreamOutput, isOutputWithData, MultiStream, MultiStreamOutput} from "./multi-stream";
+import { TestScheduler } from "rxjs/testing";
 
 describe('MultiStream', () => {
   let source1: Subject<string>;
@@ -11,6 +12,14 @@ describe('MultiStream', () => {
   let multiStream: MultiStream<string>;
   let sub: Subscription;
 
+  let testScheduler: TestScheduler;
+
+  beforeEach(() => {
+    testScheduler = new TestScheduler((actual, expected) => {
+      expect(actual).toEqual(expected);
+    });
+  });
+
   beforeEach(() => {
     source1 = new Subject<string>();
     source2 = new Subject<string>();
@@ -21,7 +30,7 @@ describe('MultiStream', () => {
     obs3 = source3.asObservable();
 
     multiStream = new MultiStream<string>();
-    multiStream.updateObservables([obs1, obs2, obs3]);
+    multiStream.setObservables([obs1, obs2, obs3]);
   });
 
   afterEach(() => {
@@ -33,29 +42,72 @@ describe('MultiStream', () => {
 
   it('should emit values when any of supplied sources emit', () => {
 
-    const result: (MultiStreamOutput<string> | undefined)[] = [],
-      expectedResult: (MultiStreamOutput<string> | undefined)[] = [
-        undefined,
-        {source: obs1, data: 'a'},
-        {source: obs2, data: 'c'},
-        {source: obs3, data: 'd'},
-      ];
+    testScheduler.run(({ hot, expectObservable }) => {
+      const source1$ = hot('a---b---c---|');
+      const source2$ = hot('-d---e---f--|');
+      const source3$ = hot('--g---h---i-|');
+      const expected = 'adg-beh-cfi-|';
 
-    sub = multiStream.stream$.subscribe((arg) => {
-      result.push(arg);
-    });
+      const multiStream = new MultiStream<string>();
+      multiStream.setObservables([source1$, source2$, source3$]);
 
-    source1.next('a');
-    source2.next('c');
-    source3.next('d');
-
-    result.forEach((arg, index) => {
-      expect(arg?.source).toBe(expectedResult[index]?.source);
-      expect(arg?.data).toBe(expectedResult[index]?.data);
+      expectObservable(multiStream.stream$).toBe(expected, {
+        a: {source: source1$, data: 'a'},
+        b: {source: source1$, data: 'b'},
+        c: {source: source1$, data: 'c'},
+        d: {source: source2$, data: 'd'},
+        e: {source: source2$, data: 'e'},
+        f: {source: source2$, data: 'f'},
+        g: {source: source3$, data: 'g'},
+        h: {source: source3$, data: 'h'},
+        i: {source: source3$, data: 'i'}
+      });
     });
   });
 
   it('should no longer observe overwritten observables', () => {
+    /*testScheduler.run(({ hot, expectObservable }) => {
+      const source1$ = hot('a-b-c-|', {
+        a: '1-a',
+        b: '1-b',
+        c: '1-c'
+      });
+      const source2$ = hot('d-e-f-|', {
+        d: '2-a',
+        e: '2-b',
+        f: '2-c'
+      });
+      const source3$ = hot('g-h-i-|', {
+        g: '3-a',
+        h: '3-b',
+        i: '3-c'
+      });
+
+      const multiStream = new MultiStream<string>();
+
+      // Start with all sources
+      multiStream.setObservables([source1$, source2$, source3$]);
+
+      // At frame 4, switch to just source2$
+      hot('---x-|').subscribe(() => {
+        multiStream.setObservables([source2$]);
+      });
+
+      const expected = 'adg-(e)-f-|';
+
+      expectObservable(multiStream.stream$).toBe(expected, {
+        a: {source: source1$, data: '1-a'},
+        d: {source: source2$, data: '2-a'},
+        g: {source: source3$, data: '3-a'},
+        e: {source: source2$, data: '2-b'},
+        f: {source: source2$, data: '2-c'}
+      });
+    });*/
+    const result: (MultiStreamOutput<string> | undefined)[] = [];
+
+    sub = multiStream.stream$.subscribe((arg) => {
+      result.push(arg);
+    });
 
     source1.next('1-a');
     source2.next('2-a');
@@ -65,33 +117,27 @@ describe('MultiStream', () => {
     expect(source2.observed).toBe(true);
     expect(source3.observed).toBe(true);
 
-    multiStream.updateObservables([obs2]);
+    multiStream.setObservables([obs2]);
 
     expect(source1.observed).toBe(false);
     expect(source2.observed).toBe(true);
     expect(source3.observed).toBe(false);
 
-    const result: (MultiStreamOutput<string> | undefined)[] = [];
-
-    sub = multiStream.stream$.subscribe((arg) => {
-      result.push(arg);
-    });
-
     source1.next('1-b');
     source2.next('2-b');
     source3.next('3-b');
 
-    expect(result.length).toEqual(2);
-    expect(result[1]?.data).toEqual('2-b');
-  })
+    expect(result.length).toEqual(4);
+    expect(result[result.length - 1]?.data).toEqual('2-b');
+  });
 
-  it('should reset current value to undefined if all observables cleared with an empty array', () => {
+  it('should not save previous values', () => {
 
     source1.next('a');
     source2.next('c');
     source3.next('d');
 
-    multiStream.updateObservables([]);
+    multiStream.setObservables([]);
 
     const result: (MultiStreamOutput<string> | undefined)[] = [];
 
@@ -99,7 +145,7 @@ describe('MultiStream', () => {
       result.push(arg);
     });
 
-    expect(result).toEqual([undefined]);
+    expect(result).toEqual([]);
   });
 
   it('should unsubscribe all supplied observables on destroy', () => {
