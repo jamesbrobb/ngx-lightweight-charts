@@ -1,7 +1,7 @@
+import {Observable} from "rxjs";
 import {TimescaleSubscriptions} from "./timescale.types";
 import {ITimeScaleApi, LogicalRange, Range, Time} from "lightweight-charts";
 import {SubscriptionStreamHandler} from "../subscriptions";
-import {Observable} from "rxjs";
 
 
 export class TimescaleStreams<HorzScaleItem = Time> implements TimescaleSubscriptions<HorzScaleItem> {
@@ -9,10 +9,17 @@ export class TimescaleStreams<HorzScaleItem = Time> implements TimescaleSubscrip
   readonly #visibleLogicalRangeChange: SubscriptionStreamHandler<LogicalRange | null>;
   readonly #sizeChange: SubscriptionStreamHandler<number>;
 
-  readonly visibleTimeRangeChange$: Observable<Range<HorzScaleItem> | null>;
-  readonly visibleLogicalRangeChange$: Observable<LogicalRange | null>;
-  readonly sizeChange$: Observable<number>;
+  get visibleTimeRangeChange$(): Observable<Range<HorzScaleItem> | null> {
+    return this.#visibleTimeRangeChange.stream$;
+  }
 
+  get visibleLogicalRangeChange$(): Observable<LogicalRange | null> {
+    return this.#visibleLogicalRangeChange.stream$;
+  }
+
+  get sizeChange$(): Observable<number> {
+    return this.#sizeChange.stream$;
+  }
 
   constructor(timescale: ITimeScaleApi<HorzScaleItem>) {
     this.#visibleTimeRangeChange = new SubscriptionStreamHandler(
@@ -27,10 +34,6 @@ export class TimescaleStreams<HorzScaleItem = Time> implements TimescaleSubscrip
       timescale.subscribeSizeChange.bind(timescale),
       timescale.unsubscribeSizeChange.bind(timescale)
     );
-
-    this.visibleTimeRangeChange$ = this.#visibleTimeRangeChange.stream$;
-    this.visibleLogicalRangeChange$ = this.#visibleLogicalRangeChange.stream$;
-    this.sizeChange$ = this.#sizeChange.stream$;
   }
 
   destroy(): void {
