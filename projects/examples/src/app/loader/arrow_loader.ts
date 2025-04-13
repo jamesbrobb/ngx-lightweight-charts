@@ -1,5 +1,5 @@
 import {Table, tableFromIPC, Field} from "apache-arrow";
-import {APP_INITIALIZER, inject, InjectionToken} from "@angular/core";
+import { inject, InjectionToken, provideAppInitializer } from "@angular/core";
 import {BehaviorSubject} from "rxjs";
 
 
@@ -60,14 +60,13 @@ export class ArrowDataLoader {
 export const TABLE_DATA = new InjectionToken<ArrowDataLoader>("TABLE_DATA");
 
 export const tableDataProviders = [
-  {
-    provide: APP_INITIALIZER,
-    useFactory: () => {
+  provideAppInitializer(() => {
+        const initializerFn = (() => {
       const td = inject(TABLE_DATA)
       return () => td.loadData(filePath);
-    },
-    multi: true
-  },
+    })();
+        return initializerFn();
+      }),
   {
     provide: TABLE_DATA,
     useValue: new ArrowDataLoader()

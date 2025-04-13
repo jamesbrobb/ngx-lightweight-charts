@@ -7,17 +7,16 @@ import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 
 
 @Component({
-  selector: 'tv-baseline-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './baseline-chart.component.html',
-  styleUrl: './baseline-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tv-baseline-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './baseline-chart.component.html',
+    styleUrl: './baseline-chart.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TVBaselineChartComponent {
   seriesOptions = input<BaselineSeriesPartialOptions>({});

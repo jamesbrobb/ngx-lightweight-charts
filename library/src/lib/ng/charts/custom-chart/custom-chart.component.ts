@@ -7,17 +7,16 @@ import {CustomData, CustomSeriesPartialOptions, ICustomSeriesPaneView, Time} fro
 
 
 @Component({
-  selector: 'tv-custom-series-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './custom-chart.component.html',
-  styleUrl: './custom-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tv-custom-series-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './custom-chart.component.html',
+    styleUrl: './custom-chart.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TVChartCustomSeriesComponent<HorzScaleItem = Time> {
   seriesOptions = input<CustomSeriesPartialOptions>({});

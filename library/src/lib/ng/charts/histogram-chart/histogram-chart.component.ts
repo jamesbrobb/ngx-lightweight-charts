@@ -15,17 +15,16 @@ const DEFAULT_HISTOGRAM_SERIES_OPTIONS: HistogramSeriesPartialOptions = {
 
 
 @Component({
-  selector: 'tv-histogram-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './histogram-chart.component.html',
-  styleUrl: './histogram-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tv-histogram-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './histogram-chart.component.html',
+    styleUrl: './histogram-chart.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TVHistogramChartComponent {
   seriesOptions = input<HistogramSeriesPartialOptions>(DEFAULT_HISTOGRAM_SERIES_OPTIONS);

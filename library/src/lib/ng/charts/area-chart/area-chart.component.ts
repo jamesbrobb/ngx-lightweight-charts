@@ -7,17 +7,16 @@ import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 
 
 @Component({
-  selector: 'tv-area-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './area-chart.component.html',
-  styleUrl: './area-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tv-area-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './area-chart.component.html',
+    styleUrl: './area-chart.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TVAreaChartComponent {
   seriesOptions = input<AreaSeriesPartialOptions>({});
