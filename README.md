@@ -26,10 +26,11 @@ A (re)implementation of the entire `lightweight-charts` [api][11].
 
 ### Getting started
 
-| Version | Angular version |
-|:--------|---------------|
-| `0.3.x` | 18 |
-| `0.2.x` | 17 |
+| Version  | Angular version |
+|:---------|---------------|
+| `19.x.x` | 19 |
+| `0.3.x`  | 18 |
+| `17.x.x` | 17 |
 
 Installation
 
