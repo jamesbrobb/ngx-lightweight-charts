@@ -14,17 +14,16 @@ const DEFAULT_BAR_SERIES_OPTIONS: BarSeriesPartialOptions = {
 
 
 @Component({
-  selector: 'tv-bar-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './bar-chart.component.html',
-  styleUrl: './bar-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tv-bar-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './bar-chart.component.html',
+    styleUrl: './bar-chart.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TVBarChartDirective {
   seriesOptions = input<BarSeriesPartialOptions>(DEFAULT_BAR_SERIES_OPTIONS);

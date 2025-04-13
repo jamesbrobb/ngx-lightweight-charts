@@ -7,17 +7,16 @@ import {tvChartOutputsDirectiveHostDef} from "../charts-outputs.directive";
 
 
 @Component({
-  selector: 'tv-line-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './line-chart.component.html',
-  styleUrl: './line-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tv-line-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './line-chart.component.html',
+    styleUrl: './line-chart.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TVLineChartDirective {
   seriesOptions = input<LineSeriesPartialOptions>({});

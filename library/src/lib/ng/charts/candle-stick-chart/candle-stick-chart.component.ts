@@ -33,16 +33,15 @@ const DEFAULT_HISTOGRAM_SERIES_OPTIONS: HistogramSeriesPartialOptions = {
 
 
 @Component({
-  selector: 'tv-candlestick-chart',
-  standalone: true,
-  imports: [TVChartDirective],
-  providers: [tvChartProvider],
-  hostDirectives: [
-    tvChartInputsDirectiveHostDef,
-    tvChartOutputsDirectiveHostDef
-  ],
-  templateUrl: './candlestick-chart.component.html',
-  styleUrl: './candlestick-chart.component.scss'
+    selector: 'tv-candlestick-chart',
+    imports: [TVChartDirective],
+    providers: [tvChartProvider],
+    hostDirectives: [
+        tvChartInputsDirectiveHostDef,
+        tvChartOutputsDirectiveHostDef
+    ],
+    templateUrl: './candlestick-chart.component.html',
+    styleUrl: './candlestick-chart.component.scss'
 })
 export class TVCandleStickChartComponent<HorzScaleItem> {
 

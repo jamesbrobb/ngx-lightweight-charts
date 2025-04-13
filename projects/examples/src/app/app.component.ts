@@ -44,23 +44,22 @@ import {NgClass} from "@angular/common";
 
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    TVChartDirective,
-    TVChartGroupDirective,
-    TVChartBorderDirective,
-    TVChartSyncDirective,
-    TVCandleStickChartComponent,
-    TVChartCollectorDirective,
-    TVChartCustomSeriesComponent,
-    TVChartCrosshairDataDirective,
-    CustomSeriesExampleDirective,
-    ResizeExampleDirective,
-    NgClass
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: 'app-root',
+    imports: [
+        TVChartDirective,
+        TVChartGroupDirective,
+        TVChartBorderDirective,
+        TVChartSyncDirective,
+        TVCandleStickChartComponent,
+        TVChartCollectorDirective,
+        TVChartCustomSeriesComponent,
+        TVChartCrosshairDataDirective,
+        CustomSeriesExampleDirective,
+        ResizeExampleDirective,
+        NgClass
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
   readonly #data = inject(TABLE_DATA);

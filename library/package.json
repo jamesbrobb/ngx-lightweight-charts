@@ -1,6 +1,6 @@
 {
   "name": "ngx-lightweight-charts",
-  "version": "0.3.6",
+  "version": "19.0.1-beta.1",
   "description": "Angular wrapper for Trading View lightweight-charts",
   "scripts": {
     "release:beta": "npm version prerelease --preid=beta && ng build && cd ../dist/ngx-lightweight-charts && npm publish --tag beta",
@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/jamesbrobb/ngx-lightweight-charts#readme",
   "peerDependencies": {
-    "@angular/common": "^18.0.5",
-    "@angular/core": "^18.0.5",
-    "lightweight-charts": "^4.1.4",
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "lightweight-charts": "^4.2.3",
     "deepmerge": "^4.3.1"
   },
   "dependencies": {
