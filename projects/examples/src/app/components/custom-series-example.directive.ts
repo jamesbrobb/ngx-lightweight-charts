@@ -20,7 +20,7 @@ export class CustomSeriesExampleDirective<HorzScaleItem = Time> {
   constructor() {
 
     effect(() => {
-      this.#collector.charts()?.forEach((chart: TVChart<'Candlestick', HorzScaleItem>) => {
+      this.#collector.charts()?.forEach((chart) => {
         const data = this.data(),
           customSeriesView= this.customSeriesView();
 
@@ -29,7 +29,7 @@ export class CustomSeriesExampleDirective<HorzScaleItem = Time> {
         }
 
         ({
-          series: this.#series
+          series: this.#series as any
         } = chart.addAdditionalSeries('Custom', this.seriesOptions(), customSeriesView));
 
         this.#series?.setData(data);

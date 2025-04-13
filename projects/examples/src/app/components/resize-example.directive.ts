@@ -12,7 +12,7 @@ export class ResizeExampleDirective {
 
   constructor() {
     effect(() => {
-      this.#collector.charts()?.forEach((chart: TVChart<any>) => {
+      this.#collector.charts()?.forEach((chart) => {
         const paneSize = chart.chart?.paneSize();
         console.log(paneSize);
         if(!paneSize) {
