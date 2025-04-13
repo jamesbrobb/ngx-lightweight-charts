@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "paths": {
       "ngx-lightweight-charts": [
-        "./dist/ngx-lightweight-charts"
+        "./library/src/public-api.ts"
       ]
     },
     "esModuleInterop": true,
